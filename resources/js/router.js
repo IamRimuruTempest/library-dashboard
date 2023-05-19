@@ -4,6 +4,7 @@ Vue.use(VueRouter);
 import Dashboard from "./pages/Dashboard";
 import Books from "./pages/Books";
 import BooksBorrowed from "./pages/BooksBorrowed";
+import BooksReturned from "./pages/BooksReturned";
 import Users from "./pages/Users";
 import Events from "./pages/Events";
 import Account from "./pages/Account";
@@ -31,8 +32,13 @@ export default new VueRouter({
             component: BooksBorrowed,
         },
         {
-            path: "/events",
-            name: "events",
+            path: "/books-returned",
+            name: "books-returned",
+            component: BooksReturned,
+        },
+        {
+            path: "/school-events",
+            name: "school-events",
             component: Events,
         },
         {

@@ -144,7 +144,7 @@
                         <v-autocomplete
                             v-model="books.status"
                             label="Status"
-                            :items="['Available', 'Unavailable']"
+                            :items="['Available', 'Unavailable', 'Borrowed']"
                             clearable
                             hide-details
                             outlined

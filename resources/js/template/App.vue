@@ -89,10 +89,10 @@ export default {
                 child: [
                     { text: "All Books", to: "books" },
                     { text: "Borrowed Books", to: "books-borrowed" },
-                    { text: "Returned Books", to: "title" },
+                    { text: "Returned Books", to: "books-returned" },
                 ],
             },
-            { text: "Events", icon: "mdi-calendar", to: "events" },
+            { text: "Events", icon: "mdi-calendar", to: "school-events" },
             { text: "Users", icon: "mdi-account-multiple", to: "users" },
             { text: "Account", icon: "mdi-account", to: "account" },
             { text: "Logout", icon: "mdi-location-exit", to: "logout" },

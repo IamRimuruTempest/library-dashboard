@@ -7,10 +7,13 @@ import App from "./template/App";
 import VueMask from "v-mask";
 import VueSweetalert2 from "vue-sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import VueApexCharts from "vue-apexcharts";
 
+Vue.use(VueApexCharts);
 Vue.use(Vuetify);
 Vue.use(VueMask);
 Vue.use(VueSweetalert2);
+Vue.component("apexchart", VueApexCharts);
 // new Vue({
 //     el: "#app",
 //     store,

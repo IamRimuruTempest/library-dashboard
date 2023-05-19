@@ -107,7 +107,7 @@
             title="Update Book"
             btn="Update"
             :items="bookInformation"
-        />
+        /> 
 
         <BookInfoDialog v-model="bookInfoDialog" :items="bookInformation" />
     </div>

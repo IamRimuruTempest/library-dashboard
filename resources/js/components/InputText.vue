@@ -9,13 +9,14 @@
             dense
             class="mb-3"
             mask="###.###"
+            :readonly="readonly"
         ></v-text-field>
     </div>
 </template>
 
 <script>
 export default {
-    props: ["value", "label", "type"],
+    props: ["value", "label", "type", "readonly"],
     computed: {
         inputVal: {
             get() {

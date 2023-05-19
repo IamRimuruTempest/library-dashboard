@@ -18,6 +18,7 @@ export default new Vuex.Store({
 
         // allProgrammers: [],
         allBooks: [],
+        allAccounts: [],
     },
 
     actions: {
@@ -57,6 +58,15 @@ export default new Vuex.Store({
                 context.commit("getBooks", res.data);
             });
         },
+
+        getAccounts(context) {
+            axios({
+                method: "post",
+                url: "/api/accounts",
+            }).then((res) => {
+                context.commit("getAccounts", res.data);
+            });
+        },
     },
 
     mutations: {
@@ -80,6 +90,10 @@ export default new Vuex.Store({
 
         getBooks(state, data) {
             state.allBooks = data;
+        },
+
+        getAccounts(state, data) {
+            state.allAccounts = data;
         },
     },
     getters: {},

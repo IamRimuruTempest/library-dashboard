@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\File;
 
 class BooksController extends Controller
 {
+
+
     public function index() {
         return DB::connection('mysql')
             ->table('books')
@@ -118,7 +120,7 @@ class BooksController extends Controller
         }
 
          if (File::exists($imagePath)) {
-            $imagePath = $request->image;
+            $image = $request->image;
         } else {
             if ($file = $request->file('image')) {
                 $destinationPath = 'book-cover/';
@@ -162,5 +164,113 @@ class BooksController extends Controller
             ->where('id', '=', $request->id)
             ->delete();
     }
+
+    public function all_borrowed_books() {
+         return DB::connection('mysql')
+            ->table('borrowed_books')
+            ->get();
+    }
+
+
+    public function borrowed_books() {
+        return DB::connection('mysql')
+        ->table('borrowed_books as bb')
+        ->join('accounts', 'bb.student_id','accounts.student_id')
+        ->join('books', 'bb.isbn','books.isbn')
+        ->where('bb.status', 'Borrowed')
+        ->select([
+            "books.id",
+            "books.title",
+            "books.isbn",
+            "books.updated_at",
+            "accounts.student_id",
+            "accounts.first_name",
+            "accounts.middle_name",
+            "accounts.last_name",
+            "accounts.suffix",
+            "accounts.department",
+            "accounts.course",
+            "accounts.year",
+            "accounts.phone_number"
+        ])
+        ->get();
+        
+    }
+
+
+
+     public function insert_borrowed_book(Request $request) {
+        DB::connection('mysql')
+        ->table('books')
+        ->where('isbn', $request->isbn)
+        ->update([
+          'borrowers' => $request->student_id,
+          'status' => 'Unavailable',
+          'updated_at' => new \Datetime
+        ]);
+
+        return DB::connection('mysql')
+            ->table('borrowed_books')
+            ->insert([
+                'isbn' => $request->isbn,
+                'student_id' => $request->student_id,
+                'librarian' => 'Fernando Corpuz',
+                'date_borrowed' => new \Datetime,
+                'status' => 'Borrowed',
+                'created_at' => new \Datetime,
+            ]);
+    }
+
+
+    public function insert_to_return_books(Request $request) {
+        DB::connection('mysql')
+        ->table('returned_books')
+        ->insert([
+            "isbn" => $request->isbn,
+            "student_id" => $request->student_id,
+            "receiver" => $request->receiver ,
+            "date_received" => $request->date,
+            "created_at" => new \Datetime ,
+        ]);
+
+        DB::connection('mysql')
+        ->table('borrowed_books')
+        ->where('isbn', $request->isbn)
+        ->update([
+            'status' => 'Returned'
+        ]);
+
+        DB::connection('mysql')
+        ->table('books')
+        ->where('isbn', $request->isbn)
+        ->update([
+            'status' => 'Available'
+        ]);
+    }
+
+
+    
+    public function get_returned_books() {
+        return DB::connection('mysql')
+            ->table('returned_books as rb')
+            ->join('books as b', 'b.isbn','rb.isbn')
+            ->join('accounts as a', 'a.student_id','rb.student_id')
+            ->select([
+                "rb.id",
+                "rb.receiver",
+                "rb.date_received",
+                "b.isbn",
+                "b.title",
+                "a.student_id",
+                "a.first_name",
+                "a.middle_name",
+                "a.last_name",
+                "a.suffix",
+                "a.course",
+                "a.phone_number",
+            ])
+            ->get();
+    }
+
     
 }

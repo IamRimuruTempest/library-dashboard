@@ -28,6 +28,7 @@ class CreateBooksTable extends Migration
             $table->string('book_description')->nullable();
             $table->string('book_image')->nullable();
             $table->string('status')->nullable();
+            $table->string('borrowers')->nullable();
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
         });
