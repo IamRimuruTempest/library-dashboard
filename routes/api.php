@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BooksController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\AccountsController;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\ImageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +19,9 @@ use App\Http\Controllers\AccountsController;
 |
 */
 
+Route::get('/message', function() {
+    return "Hello fucking world dgsgsd!";
+}); 
 
 
 
@@ -42,6 +47,11 @@ Route::post('/accounts', [AccountsController::class , 'index']);
 Route::post('/insert_user', [AccountsController::class , 'store']);
 Route::post('/update_user', [AccountsController::class , 'update']);
 Route::post('/delete_user', [AccountsController::class , 'destroy']);
+
+
+Route::post('/getUsers', [UsersController::class , 'index']);
+
+Route::get('/image/{filename}', 'ImageController@show');
 
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

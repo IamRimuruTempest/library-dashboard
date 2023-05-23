@@ -16,9 +16,9 @@ export default new Vuex.Store({
     state: {
         loggedInUser: null,
 
-        // allProgrammers: [],
         allBooks: [],
         allAccounts: [],
+        allUsers: [],
     },
 
     actions: {
@@ -32,13 +32,22 @@ export default new Vuex.Store({
                 name: "dos",
             };
 
-            axios.post("api/getUser", user_data).then((response) => {
+            axios.post("/api/getUser", user_data).then((response) => {
                 context.commit("login", response.data);
             });
         },
 
         logout(context) {
             context.commit("logout");
+        },
+
+        getUsers(context) {
+            axios({
+                method: "post",
+                url: "/api/getUsers",
+            }).then((res) => {
+                context.commit("getUsers", res.data);
+            });
         },
 
         // getProgrammers(context) {
@@ -81,12 +90,16 @@ export default new Vuex.Store({
 
         logout(state) {
             state.loggedInUser = {};
-            state.isLoggedin = false;
+            // state.isLoggedin = false;
         },
 
         // getProgrammers(state, data) {
         //     state.allProgrammers = data;
         // },
+
+        getUsers(state, data) {
+            state.allUsers = data;
+        },
 
         getBooks(state, data) {
             state.allBooks = data;

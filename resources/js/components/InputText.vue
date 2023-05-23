@@ -10,13 +10,14 @@
             class="mb-3"
             mask="###.###"
             :readonly="readonly"
+            :rules="rules"
         ></v-text-field>
     </div>
 </template>
 
 <script>
 export default {
-    props: ["value", "label", "type", "readonly"],
+    props: ["value", "label", "type", "readonly", "rules"],
     computed: {
         inputVal: {
             get() {

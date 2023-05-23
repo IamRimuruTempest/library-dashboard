@@ -7,15 +7,54 @@
                     class="d-flex align-center justify-space-betwween"
                     style="gap: 1rem"
                 >
-                    <v-card width="100%" height="8rem" color="red"
-                        ><p>{{ allBooksLength }}</p></v-card
+                    <v-card
+                        width="100%"
+                        height="8rem"
+                        color="#dd4b39"
+                        class="d-flex align-left justify-center flex-column pa-12"
                     >
-                    <v-card width="100%" height="8rem" color="red"
-                        ><h3>{{ borrowedToday.length }}</h3></v-card
+                        <h1
+                            class="text-h3 font-weight-black"
+                            style="color: #fff"
+                        >
+                            {{ allBooks.length }}
+                        </h1>
+                        <p class="text-uppercase" style="color: #fff">
+                            All Books
+                        </p>
+                    </v-card>
+                    <v-card
+                        width="100%"
+                        height="8rem"
+                        color="#00a65a"
+                        class="d-flex align-left justify-center flex-column pa-10"
+                        ><h1
+                            class="text-h3 font-weight-black"
+                            style="color: #fff"
+                        >
+                            {{ borrowedToday.length }}
+                        </h1>
+                        <p class="text-uppercase" style="color: #fff">
+                            Today's Borrowed Books
+                        </p>
+                    </v-card>
+                    <v-card
+                        width="100%"
+                        height="8rem"
+                        color="#f39c12"
+                        class="d-flex align-left justify-center flex-column pa-10"
                     >
-                    <v-card width="100%" height="8rem" color="red"
-                        ><p>{{ returnedToday.length }}</p></v-card
-                    >
+                        <!-- <p>{{ returnedToday.length }}</p> -->
+                        <h1
+                            class="text-h3 font-weight-black"
+                            style="color: #fff"
+                        >
+                            {{ returnedToday.length }}
+                        </h1>
+                        <p class="text-uppercase" style="color: #fff">
+                            Today's Returned Books
+                        </p>
+                    </v-card>
                 </div>
                 <div class="mt-6">
                     <apexchart
@@ -28,26 +67,59 @@
                 </div>
             </v-col>
             <v-col cols="4" style="height: 100vh">
-                <v-card class="ml-4 mb-4 pa-5" height="50%">
+                <v-card class="ml-4 mb-4 pa-5" height="50%" color="#dddcee">
                     <v-card-title class="px-0 pt-0 pb-2"
                         >Recent Borrowed Books</v-card-title
                     >
-                    <v-simple-table>
+                    <v-simple-table style="background-color: #dddcee">
                         <thead>
-                            <th class="text-left">Book</th>
+                            <th class="text-left">Name</th>
                             <th class="text-left">Borrower</th>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="px-0">Heloge gekgwo geo gwe</td>
-                                <td class="px-0">Heloge gekgwo geo gwe</td>
+                            <tr
+                                v-for="(item, index) of sortedBorrowedBooks"
+                                :key="index"
+                            >
+                                <td class="px-0">
+                                    {{ item.title }}
+                                </td>
+                                <td class="px-0">
+                                    {{ item.first_name }}
+                                    {{ item.middle_name }} {{ item.last_name }}
+                                    {{ item.suffix }}
+                                </td>
                             </tr>
                         </tbody>
                     </v-simple-table>
                 </v-card>
-                <v-card class="ml-4" height="50%" color="red"
-                    ><p>hai</p></v-card
-                >
+                <v-card class="ml-4 mb-4 pa-5" height="50%" color="#dddcee">
+                    <v-card-title class="px-0 pt-0 pb-2"
+                        >Recent Returned Books</v-card-title
+                    >
+                    <v-simple-table style="background-color: #dddcee">
+                        <thead>
+                            <th class="text-left">Name</th>
+                            <th class="text-left">Borrower</th>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="(item, index) of sortedReturnedBooks"
+                                :key="index"
+                            >
+                                <td class="px-0">
+                                    {{ item.title }}
+                                </td>
+                                <td class="px-0">
+                                    {{ item.first_name }}
+                                    {{ item.middle_name }}
+                                    {{ item.last_name }}
+                                    {{ item.suffix }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </v-simple-table>
+                </v-card>
             </v-col>
         </v-row>
     </div>
@@ -59,7 +131,7 @@ export default {
     data: () => ({
         allBorrowedBooks: [],
         borrowedToday: [],
-        allBooksLength: [],
+        allBooks: [],
         returnedToday: [],
         monthsArray: [],
         series: [
@@ -115,6 +187,9 @@ export default {
         },
 
         today: new Date(),
+        recentBorrowedBooks: [],
+        recentReturnedBooks: [],
+        limit: 8,
     }),
 
     methods: {
@@ -132,6 +207,7 @@ export default {
                 method: "post",
                 url: "/api/all_borrowed_books",
             }).then((res) => {
+                this.recentBorrowedBooks = res.data;
                 const formattedToday = moment(this.today).format("MMM DD YYYY");
                 for (const element of res.data) {
                     const formattedCreatedAt = moment(
@@ -148,7 +224,9 @@ export default {
                 }, {});
 
                 for (const item of res.data) {
-                    const tmpDate = moment(item.created_at).format("MMM YYYY");
+                    const tmpDate = moment(item.date_borrowed).format(
+                        "MMM YYYY"
+                    );
                     if (tmpDate in monthObj) {
                         monthObj[tmpDate].push(item);
                     }
@@ -165,10 +243,11 @@ export default {
                 method: "post",
                 url: "/api/get_returned_books",
             }).then((res) => {
+                this.recentReturnedBooks = res.data;
                 const formattedToday = moment(this.today).format("MMM DD YYYY");
                 for (const element of res.data) {
                     const formattedCreatedAt = moment(
-                        element.date_received
+                        element.created_at
                     ).format("MMM DD YYYY");
                     if (formattedCreatedAt === formattedToday) {
                         this.returnedToday.push(element);
@@ -197,7 +276,7 @@ export default {
                 method: "post",
                 url: "/api/books",
             }).then((res) => {
-                this.allBooksLength = res.data.length;
+                this.allBooks = res.data;
                 const monthObj = this.monthsArray.reduce((obj, month) => {
                     obj[month] = [];
                     return obj;
@@ -260,6 +339,25 @@ export default {
                     data: [...series.data],
                 };
             });
+        },
+
+        sortedBorrowedBooks() {
+            const sortedItems = this.recentBorrowedBooks
+                .slice()
+                .sort(
+                    (b, a) =>
+                        new Date(a.date_borrowed) - new Date(b.date_borrowed)
+                );
+            return sortedItems.slice(0, this.limit);
+        },
+
+        sortedReturnedBooks() {
+            const sortedItems = this.recentReturnedBooks
+                .slice()
+                .sort(
+                    (b, a) => new Date(a.created_at) - new Date(b.created_at)
+                );
+            return sortedItems.slice(0, this.limit);
         },
     },
 

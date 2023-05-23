@@ -21,10 +21,7 @@
                 <v-card-text>
                     <v-row>
                         <v-col cols="4">
-                            <img
-                                :src="`/book-cover/${book.book_image}`"
-                                width="100%"
-                            />
+                            <img :src="`/book-cover/${image}`" width="100%" />
                         </v-col>
                         <v-col cols="8">
                             <span>Book ID: {{ book.book_id }}</span>
@@ -72,11 +69,16 @@
 
 <script>
 import axios from "axios";
+import { mapActions } from "vuex";
 export default {
     props: ["value", "items"],
     data: () => ({
         book: {},
+        image: null,
     }),
+    methods: {
+        ...mapActions(["getBooks"]),
+    },
     computed: {
         showDialog: {
             get() {
@@ -88,13 +90,14 @@ export default {
         },
 
         imageUrl() {
-            return `/public/book-cover/031580532.png`;
+            return `/public/book-cover/${this.image}`;
         },
     },
 
     watch: {
         showDialog() {
             this.book = this.items;
+            this.image = this.items.book_image;
         },
     },
 };

@@ -7,7 +7,7 @@
 
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
-                        <v-btn icon @click="showDialog = false">
+                        <v-btn icon @click="closeDialog()">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
                     </v-toolbar-items>
@@ -15,13 +15,15 @@
 
                 <v-card-text>
                     <v-form
-                        @submit.prevent="getBook"
+                        @submit.prevent="InsertBookToBorrowedBook"
                         enctype="multipart/form-data"
+                        ref="form"
                     >
                         <InputText
                             v-model="isbn"
                             label="ISBN"
                             v-mask="'###-#-##-######-#'"
+                            :rules="rules"
                             @keyup.enter.native="getBook()"
                         />
 
@@ -29,11 +31,13 @@
                             v-model="title"
                             label="Book"
                             readonly="readonly"
+                            :rules="rules"
                         />
 
                         <InputText
                             v-model="borrowerID"
                             label="Borrower ID"
+                            :rules="rules"
                             @keyup.enter.native="getAccount()"
                         />
 
@@ -41,40 +45,44 @@
                             v-model="borrower"
                             label="Borrowers"
                             readonly="readonly"
+                            :rules="rules"
                         />
 
                         <InputText
                             v-model="department"
                             label="Department"
                             readonly="readonly"
+                            :rules="rules"
                         />
 
                         <InputText
                             v-model="course"
                             label="Course"
                             readonly="readonly"
+                            :rules="rules"
                         />
 
                         <InputText
                             v-model="yearLevel"
                             label="Year Level"
                             readonly="readonly"
+                            :rules="rules"
                         />
 
                         <InputText
                             v-model="phoneNumber"
                             label="Phone Number"
                             readonly="readonly"
+                            :rules="rules"
                         />
-
-                        <v-btn
-                            color="primary"
-                            block
-                            elevation="0"
-                            @click="InsertBookToBorrowedBook()"
-                        >
-                            Save</v-btn
-                        ></v-form
+                    </v-form>
+                    <v-btn
+                        color="primary"
+                        block
+                        elevation="0"
+                        @click="InsertBookToBorrowedBook()"
+                    >
+                        Save</v-btn
                     >
                 </v-card-text>
             </v-card>
@@ -101,6 +109,14 @@ export default {
         course: null,
         yearLevel: null,
         phoneNumber: null,
+
+        rules: [
+            (value) => {
+                if (value) return true;
+
+                return "";
+            },
+        ],
     }),
 
     methods: {
@@ -184,17 +200,25 @@ export default {
         },
 
         InsertBookToBorrowedBook() {
-            axios({
-                method: "post",
-                url: "/api/insert_borrowed_book",
-                data: {
-                    isbn: this.isbn,
-                    student_id: this.borrowerID,
-                },
-            }).then((res) => {
-                this.showDialog = false;
-                this.$emit("get-borrowed-books");
-            });
+            if (this.$refs.form.validate()) {
+                axios({
+                    method: "post",
+                    url: "/api/insert_borrowed_book",
+                    data: {
+                        isbn: this.isbn,
+                        student_id: this.borrowerID,
+                    },
+                }).then((res) => {
+                    this.showDialog = false;
+                    this.$emit("get-borrowed-books");
+                    this.$refs.form.reset();
+                });
+            }
+        },
+
+        closeDialog() {
+            this.$refs.form.reset();
+            this.showDialog = false;
         },
     },
 

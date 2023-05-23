@@ -49,7 +49,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in borrowedBooks" :key="item.id">
+                        <tr
+                            v-for="item in filteredBorrowedBooks"
+                            :key="item.id"
+                        >
                             <td class="">
                                 <v-checkbox
                                     v-model="selected"
@@ -106,6 +109,7 @@ export default {
         borrowedBooks: [],
         bookToReturn: {},
         selected: false,
+        search: "",
     }),
 
     methods: {
@@ -143,6 +147,32 @@ export default {
 
     computed: {
         ...mapState(["allBooks"]),
+
+        filteredBorrowedBooks() {
+            if (this.search) {
+                return this.borrowedBooks.filter((element) => {
+                    return (
+                        element.title
+                            .toUpperCase()
+                            .includes(this.search.toUpperCase()) ||
+                        element.first_name
+                            .toUpperCase()
+                            .includes(this.search.toUpperCase()) ||
+                        element.last_name
+                            .toUpperCase()
+                            .includes(this.search.toUpperCase()) ||
+                        element.student_id
+                            .toUpperCase()
+                            .includes(this.search.toUpperCase()) ||
+                        element.isbn
+                            .toUpperCase()
+                            .includes(this.search.toUpperCase())
+                    );
+                });
+            } else {
+                return this.borrowedBooks;
+            }
+        },
     },
 
     created() {

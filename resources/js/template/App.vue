@@ -1,6 +1,11 @@
 <template>
     <v-app id="inspire">
-        <v-navigation-drawer v-model="drawer" app color="#E0E0E0">
+        <v-navigation-drawer
+            v-model="drawer"
+            v-if="loggedInUser != null"
+            app
+            color="#E0E0E0"
+        >
             <v-list dense>
                 <div class="text-center">
                     <img
@@ -20,6 +25,7 @@
                         v-if="item.text != 'Books'"
                         :to="item.to"
                         dense
+                        color="primary"
                     >
                         <v-list-item-icon>
                             <v-icon>{{ item.icon }}</v-icon>
@@ -33,7 +39,7 @@
                         v-if="item.text == 'Books'"
                         :value="true"
                         :prepend-icon="item.icon"
-                        no-action
+                        v-model="active"
                     >
                         <template v-slot:activator>
                             <v-icon
@@ -41,9 +47,10 @@
                                 large
                                 color="primary"
                             ></v-icon>
-                            <v-list-item-title>{{
-                                item.text
-                            }}</v-list-item-title>
+                            <v-list-item-title
+                                style="font-size: 1rem; font-weight: 400"
+                                >{{ item.text }} Hello</v-list-item-title
+                            >
                         </template>
                         <div class="ml-14">
                             <v-list-item
@@ -60,6 +67,12 @@
                         </div>
                     </v-list-group>
                 </div>
+                <v-list-item button @click="logout()">
+                    <v-list-item-icon>
+                        <v-icon>mdi-location-exit</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>Logout</v-list-item-content>
+                </v-list-item>
             </v-list>
         </v-navigation-drawer>
 
@@ -69,6 +82,11 @@
                 >Cagayan State University - Carig Campus
                 Library</v-toolbar-title
             >
+            <v-spacer></v-spacer>
+            <!-- <span class="text-right ma-0">
+                {{ loggedInUser.name }}<br />
+                <span style="font-size: 0.8rem">{{ loggedInUser.email }}</span>
+            </span> -->
         </v-app-bar>
 
         <v-main class="ma-3">
@@ -78,6 +96,7 @@
 </template>
 
 <script>
+import { mapActions, mapState } from "vuex";
 export default {
     data: () => ({
         drawer: null,
@@ -95,9 +114,35 @@ export default {
             { text: "Events", icon: "mdi-calendar", to: "school-events" },
             { text: "Users", icon: "mdi-account-multiple", to: "users" },
             { text: "Account", icon: "mdi-account", to: "account" },
-            { text: "Logout", icon: "mdi-location-exit", to: "logout" },
         ],
+        active: false,
     }),
+
+    methods: {
+        ...mapActions(["logout", "storeUser"]),
+        logout() {
+            this.$swal({
+                title: "Hope to see you back soon",
+                text: "Are you sure you want to logout from CSU-Library and Information Services",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, I'm sure",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.storeUser(null);
+                    this.$router.push("/login");
+                }
+            });
+        },
+    },
+
+    computed: {
+        ...mapState(["loggedInUser"]),
+    },
+
+    created() {},
 };
 </script>
 

@@ -10,6 +10,7 @@
                         dense
                         hide-details=""
                         clearable
+                        v-model="search"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -40,7 +41,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in events" :key="item.id">
+                        <tr v-for="item in filteredEvents" :key="item.id">
                             <td>{{ item.title }}</td>
                             <td>{{ item.subtitle }}</td>
                             <td>{{ item.location }}</td>
@@ -113,6 +114,8 @@ export default {
 
         events: [],
         eventInformation: null,
+
+        search: "",
     }),
 
     methods: {
@@ -162,6 +165,28 @@ export default {
                     });
                 }
             });
+        },
+    },
+
+    computed: {
+        filteredEvents() {
+            if (this.search) {
+                return this.events.filter((element) => {
+                    return (
+                        element.title
+                            .toUpperCase()
+                            .includes(this.search.toUpperCase()) ||
+                        element.location
+                            .toUpperCase()
+                            .includes(this.search.toUpperCase()) ||
+                        element.date
+                            .toUpperCase()
+                            .includes(this.search.toUpperCase())
+                    );
+                });
+            } else {
+                return this.events;
+            }
         },
     },
 

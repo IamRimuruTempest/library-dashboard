@@ -28,3 +28,5 @@ const app = new Vue({
     vuetify: new Vuetify(),
     render: (h) => h(App),
 });
+
+export default app;

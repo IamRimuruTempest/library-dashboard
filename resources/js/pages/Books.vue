@@ -97,17 +97,17 @@
 
         <BooksDialog
             v-model="bookInsertDialog"
-            @get-books="getBooks"
+            @get-books="getBooks()"
             title="Add Book"
             btn="Save"
         />
         <BooksDialog
             v-model="bookUpdateDialog"
-            @get-books="getBooks"
+            @get-books="getBooks()"
             title="Update Book"
             btn="Update"
             :items="bookInformation"
-        /> 
+        />
 
         <BookInfoDialog v-model="bookInfoDialog" :items="bookInformation" />
     </div>

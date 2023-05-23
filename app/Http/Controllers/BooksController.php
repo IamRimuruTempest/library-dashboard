@@ -166,9 +166,22 @@ class BooksController extends Controller
     }
 
     public function all_borrowed_books() {
-         return DB::connection('mysql')
-            ->table('borrowed_books')
-            ->get();
+          return DB::connection('mysql')
+        ->table('borrowed_books as bb')
+        ->join('accounts', 'bb.student_id','accounts.student_id')
+        ->join('books', 'bb.isbn','books.isbn')
+        ->select([
+            "bb.id",
+            'bb.date_borrowed',
+            'bb.created_at',
+            "books.title",
+            "accounts.first_name",
+            "accounts.middle_name",
+            "accounts.last_name",
+            "accounts.suffix",
+        ])
+        ->get();
+        
     }
 
 
@@ -244,7 +257,8 @@ class BooksController extends Controller
         ->table('books')
         ->where('isbn', $request->isbn)
         ->update([
-            'status' => 'Available'
+            'status' => 'Available',
+            'borrowers' => NULL
         ]);
     }
 
@@ -259,6 +273,7 @@ class BooksController extends Controller
                 "rb.id",
                 "rb.receiver",
                 "rb.date_received",
+                "rb.created_at",
                 "b.isbn",
                 "b.title",
                 "a.student_id",

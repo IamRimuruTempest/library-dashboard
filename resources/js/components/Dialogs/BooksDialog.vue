@@ -10,7 +10,7 @@
 
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
-                        <v-btn icon @click="showDialog = false">
+                        <v-btn icon @click="closeDialog()">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
                     </v-toolbar-items>
@@ -20,6 +20,7 @@
                     <v-form
                         @submit.prevent="InsertUpdateBook"
                         enctype="multipart/form-data"
+                        ref="form"
                     >
                         <v-file-input
                             required
@@ -31,7 +32,7 @@
                             prepend-inner-icon="mdi-clipboard-multiple-outline"
                             accept="image/png, image/jpeg, image/jpg"
                             ref="fileupload"
-                            v-model="books.tmp_image"
+                            v-model="books.image"
                             @change="HandleImage($event)"
                             hide-details
                             class="pb-4"
@@ -43,23 +44,35 @@
                             label="Book Number"
                             v-mask="'############'"
                             required
+                            :rules="rules"
                         />
-                        <InputText v-model="books.title" label="Title" />
-                        <InputText v-model="books.author" label="Author" />
+                        <InputText
+                            v-model="books.title"
+                            label="Title"
+                            :rules="rules"
+                        />
+                        <InputText
+                            v-model="books.author"
+                            label="Author"
+                            :rules="rules"
+                        />
                         <InputText
                             v-model="books.publisher"
                             label="Publisher"
+                            :rules="rules"
                         />
                         <v-autocomplete
                             v-model="books.category"
                             label="Category"
                             :items="book_category"
+                            return-object
                             multiple
                             clearable
                             hide-details
                             outlined
                             dense
                             class="pt-0 mb-3"
+                            :rules="rules"
                         ></v-autocomplete>
 
                         <v-row class="mb-0">
@@ -68,6 +81,7 @@
                                     v-model="books.year"
                                     label="Year"
                                     v-mask="'####'"
+                                    :rules="rules"
                                 />
                             </v-col>
                             <v-col class="pb-0 mt-0">
@@ -75,6 +89,7 @@
                                     v-model="books.isbn"
                                     label="ISBN"
                                     v-mask="'###-#-##-######-#'"
+                                    :rules="rules"
                                 />
                             </v-col>
                         </v-row>
@@ -101,6 +116,7 @@
                                             clearable
                                             v-bind="attrs"
                                             v-on="on"
+                                            :rules="rules"
                                         ></v-text-field>
                                     </template>
                                     <v-date-picker
@@ -130,6 +146,7 @@
                                 <InputText
                                     v-model="books.price"
                                     label="Price"
+                                    :rules="rules"
                                 />
                             </v-col>
                             <v-col class="pt-0">
@@ -137,6 +154,7 @@
                                     v-model="books.shelf_no"
                                     label="Shelf Number"
                                     v-mask="'####'"
+                                    :rules="rules"
                                 />
                             </v-col>
                         </v-row>
@@ -144,12 +162,13 @@
                         <v-autocomplete
                             v-model="books.status"
                             label="Status"
-                            :items="['Available', 'Unavailable', 'Borrowed']"
+                            :items="['Available', 'Unavailable']"
                             clearable
                             hide-details
                             outlined
                             dense
                             class="pt-0 mb-3"
+                            :rules="rules"
                         ></v-autocomplete>
 
                         <v-textarea
@@ -162,6 +181,7 @@
                             label="Book Description"
                             hide-details
                             class="mb-3"
+                            :rules="rules"
                         ></v-textarea>
                         <v-btn
                             color="primary"
@@ -187,14 +207,15 @@ export default {
         InputText,
     },
     data: () => ({
+        image: [],
         books: {
             id: null,
-            image: null,
+            image: [],
             book_id: null,
             title: null,
             author: null,
             publisher: null,
-            category: null,
+            category: [],
             year: null,
             isbn: null,
             date_purchased: null,
@@ -237,6 +258,7 @@ export default {
 
         date: null,
         menu: false,
+        clearObj: {},
     }),
 
     methods: {
@@ -246,78 +268,85 @@ export default {
         },
 
         InsertUpdateBook() {
-            let formData = new FormData();
-            const config = {
-                headers: {
-                    "content-type": "multipart/form-data",
-                },
-            };
+            if (this.$refs.form.validate()) {
+                let formData = new FormData();
+                const config = {
+                    headers: {
+                        "content-type": "multipart/form-data",
+                    },
+                };
 
-            if (this.btn == "Save") {
-                formData.append("image", this.image);
-                formData.append("bookNum", this.books.book_id);
-                formData.append("title", this.books.title);
-                formData.append("author", this.books.author);
-                formData.append("publisher", this.books.publisher);
-                formData.append("category", this.books.category);
-                formData.append("year", this.books.year);
-                formData.append("isbn", this.books.isbn);
-                formData.append("datePurchased", this.books.date_purchased);
-                formData.append("price", this.books.price);
-                formData.append("shelfNumber", this.books.shelf_no);
-                formData.append("status", this.books.status);
-                formData.append("description", this.books.book_description);
+                if (this.btn == "Save") {
+                    formData.append("image", this.image);
+                    formData.append("bookNum", this.books.book_id);
+                    formData.append("title", this.books.title);
+                    formData.append("author", this.books.author);
+                    formData.append("publisher", this.books.publisher);
+                    formData.append("category", this.books.category);
+                    formData.append("year", this.books.year);
+                    formData.append("isbn", this.books.isbn);
+                    formData.append("datePurchased", this.books.date_purchased);
+                    formData.append("price", this.books.price);
+                    formData.append("shelfNumber", this.books.shelf_no);
+                    formData.append("status", this.books.status);
+                    formData.append("description", this.books.book_description);
 
-                axios
-                    .post("/api/insert_book", formData, config)
-                    .then((res) => {
-                        this.$swal({
-                            icon: "success",
-                            title: "You have successfully added a new book",
-                            showConfirmButton: false,
-                            timer: 2500,
-                        });
-                        this.$emit("get-books");
-                        this.showDialog = false;
-                        this.image = null;
-                        this.books = {};
-                        // this.$refs.Insert.resetValidation();
-                    })
-                    .catch((error) => console.log("Error", error));
-            } else {
-                formData.append("id", this.books.id);
-                formData.append("image", this.image);
-                formData.append("bookNum", this.books.book_id);
-                formData.append("title", this.books.title);
-                formData.append("author", this.books.author);
-                formData.append("publisher", this.books.publisher);
-                formData.append("category", this.books.category);
-                formData.append("year", this.books.year);
-                formData.append("isbn", this.books.isbn);
-                formData.append("datePurchased", this.books.date_purchased);
-                formData.append("price", this.books.price);
-                formData.append("shelfNumber", this.books.shelf_no);
-                formData.append("status", this.books.status);
-                formData.append("description", this.books.book_description);
+                    axios
+                        .post("/api/insert_book", formData, config)
+                        .then((res) => {
+                            this.$swal({
+                                icon: "success",
+                                title: "You have successfully added a new book",
+                                showConfirmButton: false,
+                                timer: 2500,
+                            });
+                            this.$emit("get-books");
+                            this.showDialog = false;
+                            this.image = null;
+                            this.books = {};
+                            // this.$refs.Insert.resetValidation();
+                        })
+                        .catch((error) => console.log("Error", error));
+                } else {
+                    formData.append("id", this.books.id);
+                    formData.append("image", this.image);
+                    formData.append("bookNum", this.books.book_id);
+                    formData.append("title", this.books.title);
+                    formData.append("author", this.books.author);
+                    formData.append("publisher", this.books.publisher);
+                    formData.append("category", this.books.category);
+                    formData.append("year", this.books.year);
+                    formData.append("isbn", this.books.isbn);
+                    formData.append("datePurchased", this.books.date_purchased);
+                    formData.append("price", this.books.price);
+                    formData.append("shelfNumber", this.books.shelf_no);
+                    formData.append("status", this.books.status);
+                    formData.append("description", this.books.book_description);
 
-                axios
-                    .post("/api/update_book", formData, config)
-                    .then((res) => {
-                        this.$swal({
-                            icon: "success",
-                            title: "Your changes have been successfully saved!!",
-                            showConfirmButton: false,
-                            timer: 2500,
-                        });
-                        this.$emit("get-books");
-                        this.showDialog = false;
-                        this.image = null;
-                        this.books = {};
+                    axios
+                        .post("/api/update_book", formData, config)
+                        .then((res) => {
+                            this.$swal({
+                                icon: "success",
+                                title: "Your changes have been successfully saved!!",
+                                showConfirmButton: false,
+                                timer: 2500,
+                            });
+                            this.$emit("get-books");
+                            this.showDialog = false;
+                            this.image = null;
+                            this.books = {};
 
-                        // this.$refs.Insert.resetValidation();
-                    })
-                    .catch((error) => console.log(error));
+                            // this.$refs.Insert.resetValidation();
+                        })
+                        .catch((error) => console.log(error));
+                }
             }
+        },
+
+        closeDialog() {
+            this.$refs.form.reset();
+            this.showDialog = false;
         },
     },
 
@@ -342,6 +371,7 @@ export default {
                 this.books.author = this.items.author;
                 this.books.publisher = this.items.publisher;
                 this.books.category = this.items.category;
+                // this.books.category.push(this.items.category);
                 this.books.year = this.items.year;
                 this.books.isbn = this.items.isbn;
                 this.books.date_purchased = this.items.date_purchased;

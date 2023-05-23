@@ -10,7 +10,7 @@
 
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
-                        <v-btn icon @click="showDialog = false">
+                        <v-btn icon @click="closeDialog()">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
                     </v-toolbar-items>
@@ -20,6 +20,7 @@
                     <v-form
                         @submit.prevent="InsertUpdateEvent"
                         enctype="multipart/form-data"
+                        ref="form"
                     >
                         <v-file-input
                             required
@@ -38,10 +39,19 @@
                         >
                         </v-file-input>
 
-                        <InputText v-model="events.title" label="Event Title" />
-                        <InputText v-model="events.subtitle" label="Subtitle" />
+                        <InputText
+                            v-model="events.title"
+                            :rules="rules"
+                            label="Event Title"
+                        />
+                        <InputText
+                            v-model="events.subtitle"
+                            :rules="rules"
+                            label="Subtitle"
+                        />
                         <InputText
                             v-model="events.location"
+                            :rules="rules"
                             label="Location"
                             class="pb-3"
                         />
@@ -59,6 +69,7 @@
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-text-field
                                             v-model="events.date"
+                                            :rules="rules"
                                             label="Event Date"
                                             readonly
                                             outlined
@@ -95,10 +106,15 @@
                             </v-col>
                         </v-row>
 
-                        <InputText v-model="events.time" label="Time" />
+                        <InputText
+                            v-model="events.time"
+                            :rules="rules"
+                            label="Time"
+                        />
 
                         <v-autocomplete
                             v-model="events.status"
+                            :rules="rules"
                             label="Status"
                             :items="['Upcoming', 'Latest', 'Finished']"
                             clearable
@@ -110,6 +126,7 @@
 
                         <v-textarea
                             v-model="events.description"
+                            :rules="rules"
                             outlined
                             auto-grow
                             rows="1"
@@ -176,69 +193,78 @@ export default {
         },
 
         InsertUpdateEvent() {
-            let formData = new FormData();
-            const config = {
-                headers: {
-                    "content-type": "multipart/form-data",
-                },
-            };
+            if (this.$refs.form.validate()) {
+                let formData = new FormData();
+                const config = {
+                    headers: {
+                        "content-type": "multipart/form-data",
+                    },
+                };
 
-            if (this.btn == "Save") {
-                formData.append("title", this.events.title);
-                formData.append("subtitle", this.events.subtitle);
-                formData.append("location", this.events.location);
-                formData.append("date", this.events.date);
-                formData.append("time", this.events.time);
-                formData.append("status", this.events.status);
-                formData.append("description", this.events.description);
-                formData.append("image", this.image);
+                if (this.btn == "Save") {
+                    formData.append("title", this.events.title);
+                    formData.append("subtitle", this.events.subtitle);
+                    formData.append("location", this.events.location);
+                    formData.append("date", this.events.date);
+                    formData.append("time", this.events.time);
+                    formData.append("status", this.events.status);
+                    formData.append("description", this.events.description);
+                    formData.append("image", this.image);
 
-                axios
-                    .post("/api/insert_event", formData, config)
-                    .then((res) => {
-                        this.$swal({
-                            icon: "success",
-                            title: "You have successfully added new event!",
-                            showConfirmButton: false,
-                            timer: 2500,
-                        });
-                        this.$emit("get-events");
-                        this.showDialog = false;
-                        this.image = null;
-                        this.events = {};
+                    axios
+                        .post("/api/insert_event", formData, config)
+                        .then((res) => {
+                            this.$swal({
+                                icon: "success",
+                                title: "You have successfully added new event!",
+                                showConfirmButton: false,
+                                timer: 2500,
+                            });
+                            this.$emit("get-events");
+                            this.$refs.form.reset();
+                            this.showDialog = false;
+                            this.image = null;
+                            this.events = {};
 
-                        // this.$refs.Insert.resetValidation();
-                    })
-                    .catch((error) => console.log("Error", error));
-            } else {
-                formData.append("id", this.events.id);
-                formData.append("title", this.events.title);
-                formData.append("subtitle", this.events.subtitle);
-                formData.append("location", this.events.location);
-                formData.append("date", this.events.date);
-                formData.append("time", this.events.time);
-                formData.append("status", this.events.status);
-                formData.append("description", this.events.description);
-                formData.append("image", this.image);
+                            // this.$refs.Insert.resetValidation();
+                        })
+                        .catch((error) => console.log("Error", error));
+                } else {
+                    formData.append("id", this.events.id);
+                    formData.append("title", this.events.title);
+                    formData.append("subtitle", this.events.subtitle);
+                    formData.append("location", this.events.location);
+                    formData.append("date", this.events.date);
+                    formData.append("time", this.events.time);
+                    formData.append("status", this.events.status);
+                    formData.append("description", this.events.description);
+                    formData.append("image", this.image);
 
-                axios
-                    .post("/api/update_event", formData, config)
-                    .then((res) => {
-                        this.$swal({
-                            icon: "success",
-                            title: "You have successfully updated new event!",
-                            showConfirmButton: false,
-                            timer: 2500,
-                        });
-                        console.log(res.data);
-                        this.$emit("get-events");
-                        this.showDialog = false;
-                        this.image = null;
-                        this.events = {};
-                        // this.$refs.Insert.resetValidation();
-                    })
-                    .catch((error) => console.log("Error", error));
+                    axios
+                        .post("/api/update_event", formData, config)
+                        .then((res) => {
+                            this.$swal({
+                                icon: "success",
+                                title: "You have successfully updated the event!",
+                                showConfirmButton: false,
+                                timer: 2500,
+                            });
+                            console.log(res.data);
+                            this.$refs.form.reset();
+                            this.$emit("get-events");
+                            this.showDialog = false;
+                            this.image = null;
+                            this.events = {};
+                            // this.$refs.Insert.resetValidation();
+                        })
+                        .catch((error) => console.log("Error", error));
+                }
             }
+        },
+
+        closeDialog() {
+            this.$refs.form.reset();
+            this.showDialog = false;
         },
     },
 
