@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-dialog v-model="showDialog" width="600" persistent>
+        <v-dialog v-model="showDialog" width="800" persistent>
             <v-card>
                 <!-- <v-card-title class="text-h5 grey lighten-2">
                     Add Books
@@ -10,7 +10,7 @@
 
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
-                        <v-btn icon @click="showDialog = false">
+                        <v-btn icon @click="closeDialog()">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
                     </v-toolbar-items>
@@ -18,8 +18,9 @@
 
                 <v-card-text>
                     <v-form
-                        @submit.prevent="InsertUpdateEvent"
+                        @submit.prevent="InsertUpdateUser"
                         enctype="multipart/form-data"
+                        ref="form"
                     >
                         <v-file-input
                             required
@@ -41,50 +42,109 @@
                         <InputText
                             v-model="user.student_id"
                             label="Student ID"
+                            v-mask="'##-######'"
+                            :rules="rules"
                         />
-                        <InputText
-                            v-model="user.first_name"
-                            label="First Name"
-                        />
-                        <InputText
-                            v-model="user.middle_name"
-                            label="Middle Name"
-                        />
-                        <InputText v-model="user.last_name" label="Last Name" />
-                        <InputText v-model="user.suffix" label="Suffix" />
 
-                        <InputText
-                            v-model="user.department"
-                            label="Department"
-                        />
-                        <InputText v-model="user.course" label="Course" />
                         <v-row class="mb-0">
                             <v-col class="pb-0 mt-0">
-                                <InputText v-model="user.year" label="Year" />
+                                <InputText
+                                    v-model="user.first_name"
+                                    label="First Name"
+                                    :rules="rules"
+                                />
                             </v-col>
                             <v-col class="pb-0 mt-0">
                                 <InputText
-                                    v-model="user.gender"
-                                    label="Gender"
+                                    v-model="user.middle_name"
+                                    label="Middle Name"
+                                    :rules="rules"
+                                />
+                            </v-col>
+                            <v-col class="pb-0 mt-0">
+                                <InputText
+                                    v-model="user.last_name"
+                                    label="Last Name"
+                                    :rules="rules"
+                                />
+                            </v-col>
+                            <v-col cols="2" class="pb-0 mt-0">
+                                <InputText
+                                    v-model="user.suffix"
+                                    label="Suffix"
                                 />
                             </v-col>
                         </v-row>
 
                         <InputText
-                            v-model="user.phone_number"
-                            label="Contact Number"
+                            v-model="user.department"
+                            label="Department"
+                            :rules="rules"
                         />
+
+                        <InputText
+                            v-model="user.course"
+                            label="Course"
+                            :rules="rules"
+                        />
+
+                        <v-row class="mb-0">
+                            <v-col class="pb-0 mt-0">
+                                <InputText
+                                    v-model="user.year"
+                                    label="Year"
+                                    v-mask="'#'"
+                                    :rules="rules"
+                                />
+                            </v-col>
+                            <v-col class="pb-0 mt-0">
+                                <v-autocomplete
+                                    v-model="user.gender"
+                                    label="Gender"
+                                    :items="['Male', 'Female']"
+                                    clearable
+                                    hide-details
+                                    outlined
+                                    dense
+                                    class="pt-0 mb-3"
+                                    :rules="rules"
+                                ></v-autocomplete>
+                            </v-col>
+                            <v-col class="pb-0 mt-0">
+                                <InputText
+                                    v-model="user.phone_number"
+                                    label="Contact Number"
+                                    v-mask="'+63-###-###-####'"
+                                    :rules="rules"
+                                />
+                            </v-col>
+                        </v-row>
+
                         <InputText
                             v-if="btn == 'Update'"
                             v-model="user.username"
                             label="Username"
+                            :rules="rules"
                         />
 
                         <InputText
                             v-if="btn == 'Update'"
                             v-model="user.password"
                             label="Password"
+                            :rules="rules"
                         />
+
+                        <v-autocomplete
+                            v-if="btn == 'Update'"
+                            v-model="user.status"
+                            label="Status"
+                            :items="['Registered', 'Unregistered']"
+                            clearable
+                            hide-details
+                            outlined
+                            dense
+                            class="pt-0 mb-3"
+                        ></v-autocomplete>
 
                         <v-btn
                             color="primary"
@@ -126,6 +186,7 @@ export default {
             image: null,
             username: null,
             password: null,
+            status: null,
         },
 
         rules: [
@@ -144,72 +205,82 @@ export default {
         },
 
         InsertUpdateUser() {
-            let formData = new FormData();
-            const config = {
-                headers: {
-                    "content-type": "multipart/form-data",
-                },
-            };
-            if (this.btn == "Save") {
-                formData.append("student_id", this.user.student_id);
-                formData.append("first_name", this.user.first_name);
-                formData.append("middle_name", this.user.middle_name);
-                formData.append("last_name", this.user.last_name);
-                formData.append("suffix", this.user.suffix);
-                formData.append("department", this.user.department);
-                formData.append("course", this.user.course);
-                formData.append("year", this.user.year);
-                formData.append("gender", this.user.gender);
-                formData.append("phone_number", this.user.phone_number);
-                formData.append("image", this.image);
-                axios
-                    .post("/api/insert_user", formData, config)
-                    .then((res) => {
-                        this.$swal({
-                            icon: "success",
-                            title: "You have successfully added new user!",
-                            showConfirmButton: false,
-                            timer: 2500,
-                        });
-                        this.$emit("get-users");
-                        this.showDialog = false;
-                        this.image = null;
-                        this.user = {};
-                        // this.$refs.Insert.resetValidation();
-                    })
-                    .catch((error) => console.log("Error", error));
-            } else {
-                formData.append("id", this.user.id);
-                formData.append("student_id", this.user.student_id);
-                formData.append("first_name", this.user.first_name);
-                formData.append("middle_name", this.user.middle_name);
-                formData.append("last_name", this.user.last_name);
-                formData.append("suffix", this.user.suffix);
-                formData.append("department", this.user.department);
-                formData.append("course", this.user.course);
-                formData.append("year", this.user.year);
-                formData.append("gender", this.user.gender);
-                formData.append("phone_number", this.user.phone_number);
-                formData.append("username", this.user.username);
-                formData.append("password", this.user.password);
-                formData.append("image", this.image);
-                axios
-                    .post("/api/update_user", formData, config)
-                    .then((res) => {
-                        this.$swal({
-                            icon: "success",
-                            title: "You have successfully updated user!",
-                            showConfirmButton: false,
-                            timer: 2500,
-                        });
-                        this.$emit("get-users");
-                        this.showDialog = false;
-                        this.image = null;
-                        this.user = {};
-                        // this.$refs.Insert.resetValidation();
-                    })
-                    .catch((error) => console.log("Error", error));
+            if (this.$refs.form.validate()) {
+                let formData = new FormData();
+                const config = {
+                    headers: {
+                        "content-type": "multipart/form-data",
+                    },
+                };
+                if (this.btn == "Save") {
+                    formData.append("student_id", this.user.student_id);
+                    formData.append("first_name", this.user.first_name);
+                    formData.append("middle_name", this.user.middle_name);
+                    formData.append("last_name", this.user.last_name);
+                    formData.append("suffix", this.user.suffix);
+                    formData.append("department", this.user.department);
+                    formData.append("course", this.user.course);
+                    formData.append("year", this.user.year);
+                    formData.append("gender", this.user.gender);
+                    formData.append("phone_number", this.user.phone_number);
+                    formData.append("image", this.image);
+                    axios
+                        .post("/api/insert_user", formData, config)
+                        .then((res) => {
+                            this.$swal({
+                                icon: "success",
+                                title: "You have successfully added new user!",
+                                showConfirmButton: false,
+                                timer: 2500,
+                            });
+                            this.$refs.form.reset();
+                            this.$emit("get-users");
+                            this.showDialog = false;
+                            this.image = null;
+                            this.user = {};
+                            // this.$refs.Insert.resetValidation();
+                        })
+                        .catch((error) => console.log("Error", error));
+                } else {
+                    formData.append("id", this.user.id);
+                    formData.append("student_id", this.user.student_id);
+                    formData.append("first_name", this.user.first_name);
+                    formData.append("middle_name", this.user.middle_name);
+                    formData.append("last_name", this.user.last_name);
+                    formData.append("suffix", this.user.suffix);
+                    formData.append("department", this.user.department);
+                    formData.append("course", this.user.course);
+                    formData.append("year", this.user.year);
+                    formData.append("gender", this.user.gender);
+                    formData.append("phone_number", this.user.phone_number);
+                    formData.append("username", this.user.username);
+                    formData.append("password", this.user.password);
+                    formData.append("status", this.user.status);
+                    formData.append("image", this.image);
+                    axios
+                        .post("/api/update_user", formData, config)
+                        .then((res) => {
+                            this.$swal({
+                                icon: "success",
+                                title: "You have successfully updated user!",
+                                showConfirmButton: false,
+                                timer: 2500,
+                            });
+                            this.$refs.form.reset();
+                            this.$emit("get-users");
+                            this.showDialog = false;
+                            this.image = null;
+                            this.user = {};
+                            // this.$refs.Insert.resetValidation();
+                        })
+                        .catch((error) => console.log("Error", error));
+                }
             }
+        },
+
+        closeDialog() {
+            this.$refs.form.reset();
+            this.showDialog = false;
         },
     },
 
@@ -241,6 +312,7 @@ export default {
                 this.user.phone_number = this.items.phone_number;
                 this.user.username = this.items.username;
                 this.user.password = this.items.password;
+                this.user.status = this.items.status;
                 this.image = this.items.image;
             }
         },

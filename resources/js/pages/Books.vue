@@ -39,7 +39,6 @@
                             <th class="text-left">Title</th>
                             <th class="text-left">Author</th>
                             <th class="text-left">Publisher</th>
-                            <th class="text-left">Category</th>
                             <th class="text-left">ISBN</th>
                             <th class="text-left">Shelf Number</th>
                             <th class="text-left">Status</th>
@@ -52,7 +51,6 @@
                             <td>{{ item.title }}</td>
                             <td>{{ item.author }}</td>
                             <td>{{ item.publisher }}</td>
-                            <td>{{ item.category }}</td>
                             <td>{{ item.isbn }}</td>
                             <td>{{ item.shelf_no }}</td>
                             <td>
@@ -113,7 +111,7 @@
     </div>
 </template>
 
-<script>
+<script scoped>
 import axios from "axios";
 import { mapActions, mapState } from "vuex";
 import BooksDialog from "../components/Dialogs/BooksDialog.vue";

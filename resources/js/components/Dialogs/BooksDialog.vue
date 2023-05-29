@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-dialog v-model="showDialog" width="600" persistent>
+        <v-dialog v-model="showDialog" width="800" persistent>
             <v-card>
                 <!-- <v-card-title class="text-h5 grey lighten-2">
                     Add Books
@@ -72,7 +72,6 @@
                             outlined
                             dense
                             class="pt-0 mb-3"
-                            :rules="rules"
                         ></v-autocomplete>
 
                         <v-row class="mb-0">
@@ -86,14 +85,29 @@
                             </v-col>
                             <v-col class="pb-0 mt-0">
                                 <InputText
-                                    v-model="books.isbn"
-                                    label="ISBN"
-                                    v-mask="'###-#-##-######-#'"
+                                    v-model="books.shelf_no"
+                                    label="Shelf Number"
+                                    v-mask="'####'"
+                                    :rules="rules"
+                                />
+                            </v-col>
+                            <v-col class="pb-0 mt-0">
+                                <InputText
+                                    v-model="books.price"
+                                    label="Price"
                                     :rules="rules"
                                 />
                             </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row class="mt-0">
+                            <v-col class="pt-0">
+                                <InputText
+                                    v-model="books.isbn"
+                                    label="ISBN"
+                                    v-mask="'###-#-##-######-#'"
+                                    :rules="isbnRules"
+                                />
+                            </v-col>
                             <v-col class="pt-0">
                                 <v-menu
                                     ref="menu"
@@ -142,21 +156,6 @@
                                     </v-date-picker>
                                 </v-menu>
                             </v-col>
-                            <v-col class="pt-0">
-                                <InputText
-                                    v-model="books.price"
-                                    label="Price"
-                                    :rules="rules"
-                                />
-                            </v-col>
-                            <v-col class="pt-0">
-                                <InputText
-                                    v-model="books.shelf_no"
-                                    label="Shelf Number"
-                                    v-mask="'####'"
-                                    :rules="rules"
-                                />
-                            </v-col>
                         </v-row>
 
                         <v-autocomplete
@@ -201,6 +200,7 @@
 <script>
 import InputText from "../InputText.vue";
 import axios from "axios";
+import { mapActions, mapState } from "vuex";
 export default {
     props: ["value", "items", "title", "btn"],
     components: {
@@ -228,6 +228,22 @@ export default {
         rules: [
             (value) => {
                 if (value) return true;
+
+                return "";
+            },
+        ],
+
+        categoryRules: [
+            (value) => {
+                if (value?.length == 0) return true;
+
+                return "";
+            },
+        ],
+
+        isbnRules: [
+            (value) => {
+                if (value?.length == 17) return true;
 
                 return "";
             },
@@ -262,6 +278,8 @@ export default {
     }),
 
     methods: {
+        ...mapActions(["getBooks"]),
+
         HandleImage(event) {
             this.image = event;
             console.log(this.image);
@@ -277,6 +295,15 @@ export default {
                 };
 
                 if (this.btn == "Save") {
+                    if (this.checkIsbn.length > 0) {
+                        this.$swal({
+                            icon: "warning",
+                            title: "ISBN already exist!",
+                            showConfirmButton: false,
+                            timer: 2000,
+                        });
+                        return false;
+                    }
                     formData.append("image", this.image);
                     formData.append("bookNum", this.books.book_id);
                     formData.append("title", this.books.title);
@@ -351,6 +378,7 @@ export default {
     },
 
     computed: {
+        ...mapState(["allBooks"]),
         showDialog: {
             get() {
                 return this.value;
@@ -358,6 +386,14 @@ export default {
             set(value) {
                 this.$emit("input", value);
             },
+        },
+
+        checkIsbn() {
+            return this.allBooks.filter((element) => {
+                if (element.isbn === this.books.isbn) {
+                    return element;
+                }
+            });
         },
     },
 

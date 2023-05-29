@@ -63,7 +63,7 @@ class BooksController extends Controller
             }
         }
 
-        return DB::connection('mysql')
+        DB::connection('mysql')
         ->table('books')
         ->insert([
             'book_id' => $request->bookNum,
@@ -80,6 +80,13 @@ class BooksController extends Controller
             'book_description' => $description,
             'book_image' => $image,
             'created_at' => new \Datetime
+        ]);
+
+        
+        DB::connection('mysql')
+        ->table('ratings')
+        ->insert([
+           'isbn' => $isbn,
         ]);
     } 
 
@@ -159,9 +166,14 @@ class BooksController extends Controller
         if (File::exists($imagePath)) {
             File::delete($imagePath);
         }
-       return DB::connection('mysql')
+        DB::connection('mysql')
             ->table('books')
             ->where('id', '=', $request->id)
+            ->delete();
+
+        DB::connection('mysql')
+            ->table('ratings')
+            ->where('isbn', '=', $request->isbn)
             ->delete();
     }
 
@@ -268,7 +280,7 @@ class BooksController extends Controller
         return DB::connection('mysql')
             ->table('returned_books as rb')
             ->join('books as b', 'b.isbn','rb.isbn')
-            ->join('accounts as a', 'a.student_id','rb.student_id')
+            ->join('accounts as a', 'a.id','rb.student_id')
             ->select([
                 "rb.id",
                 "rb.receiver",

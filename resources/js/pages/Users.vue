@@ -5,7 +5,8 @@
             <v-row>
                 <v-col cols="5" class="pr-0">
                     <v-text-field
-                        placeholder="Search Events"
+                        v-model="search"
+                        placeholder="Search User"
                         outlined
                         dense
                         hide-details=""
@@ -37,18 +38,22 @@
                             <th class="text-left">Year</th>
                             <th class="text-left">Gender</th>
                             <th class="text-left">Contact Number</th>
+                            <th class="text-left">Status</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in users" :key="item.id">
+                        <tr v-for="item in filteredUsers" :key="item.id">
                             <td>
-                                <v-avatar>
+                                <v-avatar v-if="item.image != ''">
                                     <img
                                         width="50px"
                                         height="100%"
                                         :src="`/profiles/${item.image}`"
                                     />
+                                </v-avatar>
+                                <v-avatar v-else color="info">
+                                    <v-icon>mdi-account-circle</v-icon>
                                 </v-avatar>
                             </td>
                             <td>{{ item.student_id }}</td>
@@ -63,6 +68,17 @@
                             <td>{{ item.year }}</td>
                             <td>{{ item.gender }}</td>
                             <td>{{ item.phone_number }}</td>
+                            <td>
+                                <v-chip
+                                    :color="
+                                        item.status == 'Registered'
+                                            ? 'green'
+                                            : 'red'
+                                    "
+                                    dark
+                                    >{{ item.status }}</v-chip
+                                >
+                            </td>
 
                             <td>
                                 <v-btn icon color="blue">
@@ -119,6 +135,8 @@ export default {
 
         users: [],
         userInformation: null,
+
+        search: "",
     }),
 
     methods: {
@@ -162,6 +180,31 @@ export default {
                     });
                 }
             });
+        },
+    },
+
+    computed: {
+        filteredUsers() {
+            if (this.search) {
+                return this.users.filter((element) => {
+                    return (
+                        element.first_name
+                            .toUpperCase()
+                            .includes(this.search.toUpperCase()) ||
+                        element.middle_name
+                            .toUpperCase()
+                            .includes(this.search.toUpperCase()) ||
+                        element.last_name
+                            .toUpperCase()
+                            .includes(this.search.toUpperCase()) ||
+                        element.student_id
+                            .toUpperCase()
+                            .includes(this.search.toUpperCase())
+                    );
+                });
+            } else {
+                return this.users;
+            }
         },
     },
 
