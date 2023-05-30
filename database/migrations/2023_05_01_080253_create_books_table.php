@@ -25,7 +25,7 @@ class CreateBooksTable extends Migration
             $table->string('date_purchased')->nullable();
             $table->string('price')->nullable();
             $table->string('shelf_no')->nullable();
-            $table->string('book_description')->nullable();
+            $table->longText('book_description')->nullable();
             $table->string('book_image')->nullable();
             $table->string('status')->nullable();
             $table->string('borrowers')->nullable();

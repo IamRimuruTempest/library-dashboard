@@ -327,6 +327,7 @@ export default {
                                 showConfirmButton: false,
                                 timer: 2500,
                             });
+                            this.$refs.form.reset();
                             this.$emit("get-books");
                             this.showDialog = false;
                             this.image = null;
@@ -359,6 +360,7 @@ export default {
                                 showConfirmButton: false,
                                 timer: 2500,
                             });
+                            this.$refs.form.reset();
                             this.$emit("get-books");
                             this.showDialog = false;
                             this.image = null;

@@ -45,15 +45,15 @@
                     <tbody>
                         <tr v-for="item in filteredUsers" :key="item.id">
                             <td>
-                                <v-avatar v-if="item.image != ''">
+                                <v-avatar v-if="item.image != null">
                                     <img
                                         width="50px"
                                         height="100%"
                                         :src="`/profiles/${item.image}`"
                                     />
                                 </v-avatar>
-                                <v-avatar v-else color="info">
-                                    <v-icon>mdi-account-circle</v-icon>
+                                <v-avatar v-else color="indigo">
+                                    <v-icon dark> mdi-account-circle </v-icon>
                                 </v-avatar>
                             </td>
                             <td>{{ item.student_id }}</td>

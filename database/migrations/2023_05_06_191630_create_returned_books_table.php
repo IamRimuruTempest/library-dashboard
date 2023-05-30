@@ -20,6 +20,9 @@ class CreateReturnedBooksTable extends Migration
             $table->string('receiver');
             $table->string('date_received');
             $table->string('time')->nullable();
+            $table->integer('rated')->default(0);
+            $table->integer('total')->default(0);
+            $table->integer('reviewed')->default(0);
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
         });

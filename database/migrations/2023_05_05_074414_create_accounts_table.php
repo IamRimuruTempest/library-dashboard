@@ -27,6 +27,7 @@ class CreateAccountsTable extends Migration
             $table->string('phone_number');
             $table->string('username');
             $table->string('password');
+              $table->string('status')->default('Unregistered');
             $table->string('image')->nullable();
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();

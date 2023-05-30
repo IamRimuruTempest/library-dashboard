@@ -38,7 +38,7 @@
                             <th class="text-left">Book ID</th>
                             <th class="text-left">Title</th>
                             <th class="text-left">Author</th>
-                            <th class="text-left">Publisher</th>
+                            <!-- <th class="text-left">Publisher</th> -->
                             <th class="text-left">ISBN</th>
                             <th class="text-left">Shelf Number</th>
                             <th class="text-left">Status</th>
@@ -50,7 +50,7 @@
                             <td>{{ item.book_id }}</td>
                             <td>{{ item.title }}</td>
                             <td>{{ item.author }}</td>
-                            <td>{{ item.publisher }}</td>
+                            <!-- <td>{{ item.publisher }}</td> -->
                             <td>{{ item.isbn }}</td>
                             <td>{{ item.shelf_no }}</td>
                             <td>
