@@ -200,6 +200,7 @@ export default {
         },
 
         InsertBookToBorrowedBook() {
+            const admin = this.loggedInUser.name;
             if (this.$refs.form.validate()) {
                 axios({
                     method: "post",
@@ -207,6 +208,7 @@ export default {
                     data: {
                         isbn: this.isbn,
                         student_id: this.borrowerID,
+                        admin: admin,
                     },
                 }).then((res) => {
                     this.showDialog = false;
@@ -217,13 +219,13 @@ export default {
         },
 
         closeDialog() {
-            this.$refs.form.reset();
+            // this.$refs.form.reset();
             this.showDialog = false;
         },
     },
 
     computed: {
-        ...mapState(["allBooks", "allAccounts"]),
+        ...mapState(["allBooks", "allAccounts", "loggedInUser"]),
         showDialog: {
             get() {
                 return this.value;

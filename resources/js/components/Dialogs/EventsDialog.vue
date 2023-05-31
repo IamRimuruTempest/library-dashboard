@@ -116,7 +116,7 @@
                             v-model="events.status"
                             :rules="rules"
                             label="Status"
-                            :items="['Upcoming', 'Latest', 'Finished']"
+                            :items="['All', 'Upcoming', 'Featured']"
                             clearable
                             hide-details
                             outlined
@@ -263,7 +263,7 @@ export default {
         },
 
         closeDialog() {
-            this.$refs.form.reset();
+            // this.$refs.form.reset();
             this.showDialog = false;
         },
     },

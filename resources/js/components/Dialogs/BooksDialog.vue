@@ -374,7 +374,7 @@ export default {
         },
 
         closeDialog() {
-            this.$refs.form.reset();
+            // this.$refs.form.reset();
             this.showDialog = false;
         },
     },

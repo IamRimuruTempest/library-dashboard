@@ -64,9 +64,9 @@ export default {
                 method: "post",
                 url: "/api/get_returned_books",
             }).then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 this.booksReturned = res.data;
-                console.log("Hello World!");
+                console.log(this.booksReturned, "Hello World!");
             });
         },
     },

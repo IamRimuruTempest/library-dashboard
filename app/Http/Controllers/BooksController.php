@@ -208,6 +208,7 @@ class BooksController extends Controller
             "books.title",
             "books.isbn",
             "books.updated_at",
+            "accounts.id as uid",
             "accounts.student_id",
             "accounts.first_name",
             "accounts.middle_name",
@@ -239,7 +240,7 @@ class BooksController extends Controller
             ->insert([
                 'isbn' => $request->isbn,
                 'student_id' => $request->student_id,
-                'librarian' => 'Fernando Corpuz',
+                'librarian' => $request->admin,
                 'date_borrowed' => new \Datetime,
                 'status' => 'Borrowed',
                 'created_at' => new \Datetime,
@@ -252,9 +253,9 @@ class BooksController extends Controller
         ->table('returned_books')
         ->insert([
             "isbn" => $request->isbn,
-            "student_id" => $request->student_id,
+            "student_id" => $request->uid,
             "receiver" => $request->receiver ,
-            "date_received" => $request->date,
+            "date_received" => $request->date_received,
             "created_at" => new \Datetime ,
         ]);
 

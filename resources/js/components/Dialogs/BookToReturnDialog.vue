@@ -51,7 +51,7 @@
                             readonly="readonly"
                         />
 
-                        <InputText v-model="book.receiver" label="Receiver" />
+                        <!-- <InputText v-model="book.receiver" label="Receiver" /> -->
 
                         <v-menu
                             ref="menu"
@@ -113,6 +113,7 @@
 <script>
 import InputText from "../InputText.vue";
 import axios from "axios";
+import { mapActions, mapState } from "vuex";
 export default {
     props: ["value", "bookToReturn"],
     components: {
@@ -126,10 +127,16 @@ export default {
 
     methods: {
         InsertToReturnBooks() {
+            const receiver = this.loggedInUser.name;
             axios({
                 method: "post",
                 url: "/api/insert_to_return_books",
-                data: this.book,
+                data: {
+                    isbn: this.book.isbn,
+                    uid: this.book.uid,
+                    receiver: receiver,
+                    date_received: this.date,
+                },
             }).then((res) => {
                 this.showDialog = false;
                 this.$emit("get-borrowed-books");
@@ -138,6 +145,7 @@ export default {
     },
 
     computed: {
+        ...mapState(["loggedInUser"]),
         showDialog: {
             get() {
                 return this.value;
@@ -154,6 +162,7 @@ export default {
         showDialog() {
             this.book.isbn = this.bookToReturn.isbn;
             this.book.book = this.bookToReturn.title;
+            this.book.uid = this.bookToReturn.uid;
             this.book.student_id = this.bookToReturn.student_id;
             let suffix;
             if (this.bookToReturn.suffix == null) {

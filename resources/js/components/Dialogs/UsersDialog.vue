@@ -138,7 +138,7 @@
                             v-if="btn == 'Update'"
                             v-model="user.status"
                             label="Status"
-                            :items="['Registered', 'Unregistered']"
+                            :items="['Verified', 'Unverified']"
                             clearable
                             hide-details
                             outlined
@@ -279,7 +279,7 @@ export default {
         },
 
         closeDialog() {
-            this.$refs.form.reset();
+            // this.$refs.form.reset();
             this.showDialog = false;
         },
     },
@@ -297,7 +297,7 @@ export default {
 
     watch: {
         showDialog() {
-            if (this.btn != "Save") {
+            if (this.btn == "Update") {
                 console.log(this.items);
                 this.user.id = this.items.id;
                 this.user.student_id = this.items.student_id;

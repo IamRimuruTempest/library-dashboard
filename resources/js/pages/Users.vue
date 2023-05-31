@@ -71,7 +71,7 @@
                             <td>
                                 <v-chip
                                     :color="
-                                        item.status == 'Registered'
+                                        item.status == 'Verified'
                                             ? 'green'
                                             : 'red'
                                     "
