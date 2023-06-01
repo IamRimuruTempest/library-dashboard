@@ -60,18 +60,52 @@
                     <apexchart
                         type="bar"
                         width="100%"
-                        height="350"
+                        height="400"
                         :options="chartOptions"
                         :series="chartSeries"
                     ></apexchart>
                 </div>
+
+                <div>
+                    <h4 class="text-uppercase">New Users</h4>
+                    <v-simple-table>
+                        <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <th class="text-left">Student ID</th>
+                                    <th class="text-left">Full Name</th>
+                                    <th class="text-left">Course</th>
+                                    <th class="text-left">Department</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, index) of users" :key="index">
+                                    <td>{{ item.student_id }}</td>
+                                    <td>
+                                        {{ item.first_name }}
+                                        {{ item.middle_name }}
+                                        {{ item.last_name }}
+                                        {{ item.suffix }}
+                                    </td>
+                                    <td>{{ item.course }}</td>
+                                    <td>{{ item.department }}</td>
+                                </tr>
+                            </tbody>
+                        </template>
+                    </v-simple-table>
+                </div>
             </v-col>
             <v-col cols="4" style="height: 100vh">
-                <v-card class="ml-4 mb-4 pa-5" height="50%" color="#dddcee">
+                <v-card
+                    class="ml-4 mb-4 pa-5"
+                    height="50%"
+                    color="#FDE8D1"
+                    elevation="0"
+                >
                     <v-card-title class="px-0 pt-0 pb-2"
                         >Recent Borrowed Books</v-card-title
                     >
-                    <v-simple-table style="background-color: #dddcee">
+                    <v-simple-table style="background-color: #fde8d1">
                         <thead>
                             <th class="text-left">Name</th>
                             <th class="text-left">Borrower</th>
@@ -93,11 +127,16 @@
                         </tbody>
                     </v-simple-table>
                 </v-card>
-                <v-card class="ml-4 mb-4 pa-5" height="50%" color="#dddcee">
+                <v-card
+                    class="ml-4 mb-4 pa-5"
+                    height="50%"
+                    color="#FDE8D1"
+                    elevation="0"
+                >
                     <v-card-title class="px-0 pt-0 pb-2"
                         >Recent Returned Books</v-card-title
                     >
-                    <v-simple-table style="background-color: #dddcee">
+                    <v-simple-table style="background-color: #fde8d1">
                         <thead>
                             <th class="text-left">Name</th>
                             <th class="text-left">Borrower</th>
@@ -190,6 +229,7 @@ export default {
         recentBorrowedBooks: [],
         recentReturnedBooks: [],
         limit: 8,
+        users: [],
     }),
 
     methods: {
@@ -328,6 +368,22 @@ export default {
             // });
             this.chartOptions.xaxis.categories = this.monthsArray;
         },
+
+        getUsers() {
+            axios({
+                method: "post",
+                url: "/api/accounts",
+            }).then((res) => {
+                // console.log(res.data, "test");
+
+                this.users = res.data.filter((element) => {
+                    if (element.status == "Verified") {
+                        return element;
+                    }
+                });
+                console.log(this.users);
+            });
+        },
     },
 
     computed: {
@@ -366,6 +422,7 @@ export default {
         this.getAllBorrowedBooks();
         this.getAllReturnedBooks();
         this.getAllAddedBooks();
+        this.getUsers();
     },
 
     mounted() {

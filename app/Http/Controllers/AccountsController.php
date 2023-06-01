@@ -60,7 +60,7 @@ class AccountsController extends Controller
          $image = null;
 
         $suffix = $request->suffix;
-        if($suffix == 'null' || $suffix == 'undefined') {
+        if($suffix == 'null' || $suffix == '') {
             $suffix = '';
         } 
 

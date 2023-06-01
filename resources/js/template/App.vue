@@ -49,7 +49,7 @@
                             ></v-icon>
                             <v-list-item-title
                                 style="font-size: 1rem; font-weight: 400"
-                                >{{ item.text }} Hello</v-list-item-title
+                                >{{ item.text }}</v-list-item-title
                             >
                         </template>
                         <div class="ml-14">
@@ -76,7 +76,7 @@
             </v-list>
         </v-navigation-drawer>
 
-        <v-app-bar app elevation="0">
+        <v-app-bar app elevation="0" color="#FFFFFF">
             <!-- <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon> -->
             <v-toolbar-title
                 >Cagayan State University - Carig Campus

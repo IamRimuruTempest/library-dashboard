@@ -185,7 +185,7 @@ export default {
                     account[0].last_name +
                     " ";
                 this.department = account[0].department;
-                this.course = account[0].department;
+                this.course = account[0].course;
                 this.yearLevel = account[0].year;
                 this.phoneNumber = account[0].phone_number;
             } else {
