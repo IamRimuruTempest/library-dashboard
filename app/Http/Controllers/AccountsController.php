@@ -15,15 +15,11 @@ class AccountsController extends Controller
     }
 
     public function store(Request $request) {
-       $image = null;
-        
+        $image = null;
 
-        $suffix = $request->suffix;
-        if($suffix == 'null' || $suffix == '') {
-            $suffix = '';
-        } 
+        $suffix = ($request->suffix === 'null' || $request->suffix === '') ? null : $request->category;
 
-          if($request->filled('image')) {
+        if($request->filled('image')) {
             $image = null;
         } else {
              if ($file = $request->file('image')) {
@@ -57,12 +53,10 @@ class AccountsController extends Controller
 
 
     public function update(Request $request) {
-         $image = null;
+        $image = null;
 
-        $suffix = $request->suffix;
-        if($suffix == 'null' || $suffix == '') {
-            $suffix = '';
-        } 
+        $suffix = ($request->suffix === 'null' || $request->suffix === '') ? null : $request->category;
+ 
 
         $imagePath = public_path('profiles\\' . $request->image);
 

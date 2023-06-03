@@ -17,7 +17,7 @@ class EventsController extends Controller
     public function store(Request $request) {
 
        
-         $image = null;
+        $image = null;
 
           if($request->filled('image')) {
             $image = null;

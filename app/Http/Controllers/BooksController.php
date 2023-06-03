@@ -14,100 +14,37 @@ class BooksController extends Controller
         return DB::connection('mysql')
             ->table('books')
             ->get();
-        // return "HEllo world Dos!";
     }
 
    
 
     public function store(Request $request) {
-        // $image = null;
+       
 
-        // $category = $request->category;
-        // $year = $request->year;
-        // $isbn = $request->isbn;
-        // $datePurchased = $request->datePurchased;
-        // $price = $request->price;
-        // $shelfNumber = $request->shelfNumber;
-        // $description = $request->description;
+       $image = null;
+       $category = ($request->category === 'null' || $request->category === 'undefined') ? null : $request->category;
+       $year = ($request->year === 'null' || $request->year === 'undefined') ? null : $request->year;
+       $isbn = ($request->isbn === 'null' || $request->isbn === 'undefined') ? null : $request->isbn;
+       $datePurchased = ($request->datePurchased === 'null' || $request->datePurchased === 'undefined') ? null : $request->datePurchased;
+       $price = ($request->price === 'null' || $request->price === 'undefined') ? null : $request->price;
+       $shelfNumber = ($request->shelfNumber === 'null' || $request->shelfNumber === 'undefined') ? null : $request->shelfNumber;
+       $description = ($request->description === 'null' || $request->description === 'undefined') ? null : $request->description;
 
-        // if($category == 'null' || $category == 'undefined') {
-        //     $category = null;
-        // } 
-        // if($year == 'null' || $year == 'undefined') {
-        //     $year = null;
-        // } 
-        // if($isbn == 'null' || $isbn == 'undefined') {
-        //     $isbn = null;
-        // }
-        // if( $datePurchased == 'null' || $datePurchased == 'undefined') {
-        //     $datePurchased = null;
-        // }
-        // if($price == 'null' || $price == 'undefined') {
-        //     $price = null;
-        // }
-        // if($shelfNumber == 'null' || $shelfNumber == 'undefined') {
-        //     $shelfNumber = null;
-        // }
-        //  if($description == 'null' || $description == 'undefined') {
-        //     $description = null;
-        // }
 
-        // if($request->filled('image')) {
-        //     $image = null;
-        // } else {
-        //      if ($file = $request->file('image')) {
-        //         $destinationPath = 'book-cover/';
-        //         $image = $request->bookNum . "." . $file->getClientOriginalExtension();
-        //         $file->move($destinationPath, $image);
-        //         $input['image'] = "$image";
-        //     }
-        // }
-
-        // DB::connection('mysql')
-        // ->table('books')
-        // ->insert([
-        //     'book_id' => $request->bookNum,
-        //     'title' => $request->title,
-        //     'author' => $request->author,
-        //     'publisher' => $request->publisher,
-        //     'category' => $category,
-        //     'year' => $year,
-        //     'isbn' => $isbn,
-        //     'date_purchased' => $datePurchased,
-        //     'price' => $price,
-        //     'shelf_no' => $shelfNumber,
-        //     'status' => $request->status,
-        //     'book_description' => $description,
-        //     'book_image' => $image,
-        //     'created_at' => new \Datetime
-        // ]);
-
-        
-        // DB::connection('mysql')
-        // ->table('ratings')
-        // ->insert([
-        //    'isbn' => $isbn,
-        // ]);
-
-        $image = null;
-        $category = $request->category ?? null;
-        $year = $request->year ?? null;
-        $isbn = $request->isbn ?? null;
-        $datePurchased = $request->datePurchased ?? null;
-        $price = $request->price ?? null;
-        $shelfNumber = $request->shelfNumber ?? null;
-        $description = $request->description ?? null;
-
-        if ($request->filled('image')) {
+        if($request->filled('image')) {
             $image = null;
-        } elseif ($file = $request->file('image')) {
-            $destinationPath = 'book-cover/';
-            $image = $request->bookNum . "." . $file->getClientOriginalExtension();
-            $file->move($destinationPath, $image);
-            $input['image'] = $image;
+        } else {
+             if ($file = $request->file('image')) {
+                $destinationPath = 'book-cover/';
+                $image = $request->bookNum . "." . $file->getClientOriginalExtension();
+                $file->move($destinationPath, $image);
+                $input['image'] = "$image";
+            }
         }
 
-        DB::connection('mysql')->table('books')->insert([
+        DB::connection('mysql')
+        ->table('books')
+        ->insert([
             'book_id' => $request->bookNum,
             'title' => $request->title,
             'author' => $request->author,
@@ -124,48 +61,30 @@ class BooksController extends Controller
             'created_at' => new \Datetime
         ]);
 
-        DB::connection('mysql')->table('ratings')->insert([
-            'isbn' => $isbn,
+        
+        DB::connection('mysql')
+        ->table('ratings')
+        ->insert([
+           'isbn' => $isbn,
         ]);
+
+       
     } 
 
 
     public function update(Request $request) {
         $image = null;
-
-        $category = $request->category;
-        $year = $request->year;
-        $isbn = $request->isbn;
-        $datePurchased = $request->datePurchased;
-        $price = $request->price;
-        $shelfNumber = $request->shelfNumber;
-        $description = $request->description;
+        $category = ($request->category === 'null' || $request->category === 'undefined') ? null : $request->category;
+        $year = ($request->year === 'null' || $request->year === 'undefined') ? null : $request->year;
+        $isbn = ($request->isbn === 'null' || $request->isbn === 'undefined') ? null : $request->isbn;
+        $datePurchased = ($request->datePurchased === 'null' || $request->datePurchased === 'undefined') ? null : $request->datePurchased;
+        $price = ($request->price === 'null' || $request->price === 'undefined') ? null : $request->price;
+        $shelfNumber = ($request->shelfNumber === 'null' || $request->shelfNumber === 'undefined') ? null : $request->shelfNumber;
+        $description = ($request->description === 'null' || $request->description === 'undefined') ? null : $request->description;
 
         $imagePath = public_path('book-cover\\' . $request->image);
 
-        if($category == 'null' || $category == 'undefined') {
-            $category = null;
-        } 
-        if($year == 'null' || $year == 'undefined') {
-            $year = null;
-        } 
-        if($isbn == 'null' || $isbn == 'undefined') {
-            $isbn = null;
-        }
-        if( $datePurchased == 'null' || $datePurchased == 'undefined') {
-            $datePurchased = null;
-        }
-        if($price == 'null' || $price == 'undefined') {
-            $price = null;
-        }
-        if($shelfNumber == 'null' || $shelfNumber == 'undefined') {
-            $shelfNumber = null;
-        }
-         if($description == 'null' || $description == 'undefined') {
-            $description = null;
-        }
-
-         if (File::exists($imagePath)) {
+        if (File::exists($imagePath)) {
             $image = $request->image;
         } else {
             if ($file = $request->file('image')) {
@@ -217,7 +136,7 @@ class BooksController extends Controller
     }
 
     public function all_borrowed_books() {
-          return DB::connection('mysql')
+        return DB::connection('mysql')
         ->table('borrowed_books as bb')
         ->join('accounts', 'bb.student_id','accounts.student_id')
         ->join('books', 'bb.isbn','books.isbn')
