@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laravel SPA</title>
+    <title>Library Admin</title>
 </head>
 <body>
     <div id='app'></div>

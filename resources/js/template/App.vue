@@ -76,7 +76,12 @@
             </v-list>
         </v-navigation-drawer>
 
-        <v-app-bar app elevation="0" color="#FFFFFF">
+        <v-app-bar
+            v-if="loggedInUser != null"
+            app
+            elevation="0"
+            color="#FFFFFF"
+        >
             <!-- <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon> -->
             <v-toolbar-title
                 >Cagayan State University - Carig Campus

@@ -127,6 +127,20 @@
                             :rules="rules"
                         />
 
+                        <!-- <v-text-field
+                            v-if="btn == 'Update'"
+                            dense
+                            hide-details=""
+                            label="Password"
+                            v-model="user.password"
+                            outlined
+                            :append-icon="eye ? 'mdi-eye' : 'mdi-eye-off'"
+                            @click:append="toggleEye"
+                            :type="eye != true ? 'text' : 'password'"
+                            :rules="rules"
+                        >
+                        </v-text-field> -->
+
                         <InputText
                             v-if="btn == 'Update'"
                             v-model="user.password"
@@ -196,6 +210,8 @@ export default {
                 return "";
             },
         ],
+
+        eye: true,
     }),
 
     methods: {
