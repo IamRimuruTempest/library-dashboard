@@ -50,6 +50,11 @@ Route::post('/delete_user', [AccountsController::class , 'destroy']);
 
 
 Route::post('/getUsers', [UsersController::class , 'index']);
+Route::post('/insert_admin', [UsersController::class , 'store']);
+Route::post('/update_admin', [UsersController::class , 'update']);
+Route::post('/delete_admin', [UsersController::class , 'destroy']);
+
+
 
 Route::get('/image/{filename}', 'ImageController@show');
 

@@ -14,6 +14,8 @@ class AccountsController extends Controller
             ->get();
     }
 
+    
+
     public function store(Request $request) {
         $image = null;
 
