@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Books from "./pages/Books";
 import BooksBorrowed from "./pages/BooksBorrowed";
 import BooksReturned from "./pages/BooksReturned";
+import BooksArchived from "./pages/BooksArchived";
 import Users from "./pages/Users";
 import Events from "./pages/Events";
 import Account from "./pages/Account";
@@ -36,6 +37,11 @@ const routes = [
         path: "/books-returned",
         name: "books-returned",
         component: BooksReturned,
+    },
+    {
+        path: "/books-archived",
+        name: "books-archived",
+        component: BooksArchived,
     },
     {
         path: "/school-events",

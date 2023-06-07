@@ -114,6 +114,7 @@ export default {
                     { text: "All Books", to: "books" },
                     { text: "Borrowed Books", to: "books-borrowed" },
                     { text: "Returned Books", to: "books-returned" },
+                    { text: "Archived Books", to: "books-archived" },
                 ],
             },
             { text: "Events", icon: "mdi-calendar", to: "school-events" },

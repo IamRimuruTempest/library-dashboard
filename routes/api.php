@@ -32,6 +32,9 @@ Route::post('/delete_book', [BooksController::class , 'destroy']);
 Route::post('/borrowed_books', [BooksController::class , 'borrowed_books']);
 Route::post('/all_borrowed_books', [BooksController::class , 'all_borrowed_books']);
 Route::post('/insert_borrowed_book', [BooksController::class , 'insert_borrowed_book']);
+Route::post('/update_borrowed_status', [BooksController::class , 'update_borrowed_status']);
+Route::post('/get_archived_books', [BooksController::class , 'get_archived_books']);
+Route::post('/restore_book', [BooksController::class , 'restore_book']);
 
 Route::post('/insert_to_return_books', [BooksController::class , 'insert_to_return_books']);
 Route::post('/get_returned_books', [BooksController::class , 'get_returned_books']);

@@ -66,7 +66,6 @@
                             label="Category"
                             :items="book_category"
                             return-object
-                            multiple
                             clearable
                             hide-details
                             outlined
@@ -327,7 +326,7 @@ export default {
                                 showConfirmButton: false,
                                 timer: 2500,
                             });
-                            this.$refs.form.reset();
+                            // this.$refs.form.reset();
                             this.$emit("get-books");
                             this.showDialog = false;
                             this.image = null;
@@ -360,13 +359,12 @@ export default {
                                 showConfirmButton: false,
                                 timer: 2500,
                             });
-                            this.$refs.form.reset();
+                            // this.$refs.form.reset();
+                            // this.$refs.Insert.resetValidation();
                             this.$emit("get-books");
                             this.showDialog = false;
                             this.image = null;
                             this.books = {};
-
-                            // this.$refs.Insert.resetValidation();
                         })
                         .catch((error) => console.log(error));
                 }

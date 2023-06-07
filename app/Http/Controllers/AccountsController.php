@@ -19,8 +19,7 @@ class AccountsController extends Controller
     public function store(Request $request) {
         $image = null;
 
-        $suffix = ($request->suffix === 'null' || $request->suffix === '') ? null : $request->category;
-
+        $suffix = ($request->suffix === 'null' || $request->suffix === '') ? null : $request->suffix;
         if($request->filled('image')) {
             $image = null;
         } else {

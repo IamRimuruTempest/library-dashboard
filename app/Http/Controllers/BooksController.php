@@ -13,8 +13,11 @@ class BooksController extends Controller
     public function index() {
         return DB::connection('mysql')
             ->table('books')
+            ->whereNull('deleted_at')
             ->get();
     }
+
+   
 
    
 
@@ -41,6 +44,12 @@ class BooksController extends Controller
                 $input['image'] = "$image";
             }
         }
+
+         DB::connection('mysql')
+        ->table('reservations')
+        ->insert([
+            'isbn' => $isbn
+        ]);
 
         DB::connection('mysql')
         ->table('books')
@@ -94,8 +103,8 @@ class BooksController extends Controller
                 $input['image'] = "$image";
             }
         }
-
-        return DB::connection('mysql')
+       
+        DB::connection('mysql')
         ->table('books')
         ->where('id', '=', $request->id)
         ->update([
@@ -114,25 +123,37 @@ class BooksController extends Controller
             'book_image' => $image,
             'updated_at' => new \Datetime
         ]);
+
+        //  DB::connection('mysql')
+        // ->table('ratings')
+        // ->update([
+        //    'isbn' => $isbn,
+        // ]);
+
+        // DB::connection('mysql')
+        // ->table('reservations')
+        // ->update([
+        //    'isbn' => $isbn,
+        // ]);
     }
 
 
 
     public function destroy(Request $request) {
-       $imagePath = public_path('book-cover\\' . $request->book_image);
+    //    $imagePath = public_path('book-cover\\' . $request->book_image);
        
-        if (File::exists($imagePath)) {
-            File::delete($imagePath);
-        }
+    //     if (File::exists($imagePath)) {
+    //         File::delete($imagePath);
+    //     }
         DB::connection('mysql')
             ->table('books')
             ->where('id', '=', $request->id)
-            ->delete();
+            ->update(['deleted_at' => new \Datetime]);
 
-        DB::connection('mysql')
-            ->table('ratings')
-            ->where('isbn', '=', $request->isbn)
-            ->delete();
+        // DB::connection('mysql')
+        //     ->table('ratings')
+        //     ->where('isbn', '=', $request->isbn)
+        //     ->update(['deleted_at' => new \Datetime]);
     }
 
     public function all_borrowed_books() {
@@ -143,7 +164,6 @@ class BooksController extends Controller
         ->select([
             "bb.id",
             'bb.date_borrowed',
-            'bb.created_at',
             "books.title",
             "accounts.first_name",
             "accounts.middle_name",
@@ -165,6 +185,10 @@ class BooksController extends Controller
             "books.id",
             "books.title",
             "books.isbn",
+            "books.price",
+            "bb.id as borrowed_id",
+            "bb.date_borrowed",
+            "bb.penalty",
             "books.updated_at",
             "accounts.id as uid",
             "accounts.student_id",
@@ -203,6 +227,18 @@ class BooksController extends Controller
                 'status' => 'Borrowed',
                 'created_at' => new \Datetime,
             ]);
+    }
+
+     public function update_borrowed_status(Request $request) {
+       
+        DB::connection('mysql')
+        ->table('borrowed_books')
+        ->where('id', $request->id)
+        ->update([
+          'penalty' => $request->status,
+          'updated_at' => new \Datetime
+        ]);
+
     }
 
 
@@ -257,6 +293,22 @@ class BooksController extends Controller
             ])
             ->get();
     }
+
+     public function get_archived_books() {
+        return DB::connection('mysql')
+            ->table('books')
+            ->whereNotNull('deleted_at')
+            ->get();
+    }
+
+     public function restore_book(Request $request) {
+            DB::connection('mysql')
+            ->table('books')
+            ->where('id', '=', $request->id)
+            ->update(['deleted_at' => NULL]);
+    }
+
+
 
     
 }

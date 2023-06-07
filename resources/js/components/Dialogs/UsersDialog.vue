@@ -69,10 +69,24 @@
                                 />
                             </v-col>
                             <v-col cols="2" class="pb-0 mt-0">
-                                <InputText
+                                <v-autocomplete
                                     v-model="user.suffix"
                                     label="Suffix"
-                                />
+                                    :items="[
+                                        'Jr',
+                                        'Sr',
+                                        'I',
+                                        'II',
+                                        'III',
+                                        'IV',
+                                    ]"
+                                    clearable
+                                    hide-details
+                                    outlined
+                                    dense
+                                    class="pt-0 mb-3"
+                                    :rules="rules"
+                                ></v-autocomplete>
                             </v-col>
                         </v-row>
 

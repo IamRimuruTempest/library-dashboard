@@ -161,7 +161,7 @@ export default {
                 if (result.isConfirmed) {
                     axios({
                         method: "post",
-                        url: "/api/delete_book",
+                        url: "/api/delete_book", 
                         data: item,
                     }).then((res) => {
                         this.$swal(
