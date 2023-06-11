@@ -127,12 +127,12 @@ export default {
 
         checkBorrowedBooks(isbn) {
             const borrowedBook = this.borrowedBooks.filter((element) => {
-                if (element.isbn == isbn) {
+                if (element.isbn == isbn && element.status == "Unavailable") {
                     return element;
                 }
             });
 
-            if (borrowedBook.length >= 1) {
+            if (borrowedBook.length != 0) {
                 this.$swal({
                     icon: "info",
                     title: "Oops...",
@@ -171,7 +171,7 @@ export default {
             });
 
             if (account.length >= 1) {
-                let tmpSuffix;
+                let tmpSuffix = "";
                 if (account[0].suffix == null) {
                     tmpSuffix = "";
                 } else {
@@ -211,6 +211,7 @@ export default {
                         admin: admin,
                     },
                 }).then((res) => {
+                    console.log(res.data);
                     this.showDialog = false;
                     this.$emit("get-borrowed-books");
                     this.$refs.form.reset();

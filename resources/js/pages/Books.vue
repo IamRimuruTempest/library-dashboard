@@ -40,6 +40,7 @@
                             <th class="text-left">Author</th>
                             <!-- <th class="text-left">Publisher</th> -->
                             <th class="text-left">ISBN</th>
+                            <th class="text-left">Quantity</th>
                             <th class="text-left">Shelf Number</th>
                             <th class="text-left">Status</th>
                             <th class="text-left"></th>
@@ -52,6 +53,7 @@
                             <td>{{ item.author }}</td>
                             <!-- <td>{{ item.publisher }}</td> -->
                             <td>{{ item.isbn }}</td>
+                            <td>{{ item.quantity }}</td>
                             <td>{{ item.shelf_no }}</td>
                             <td>
                                 <v-chip
@@ -161,7 +163,7 @@ export default {
                 if (result.isConfirmed) {
                     axios({
                         method: "post",
-                        url: "/api/delete_book", 
+                        url: "/api/delete_book",
                         data: item,
                     }).then((res) => {
                         this.$swal(

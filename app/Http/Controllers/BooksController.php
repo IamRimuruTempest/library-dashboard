@@ -62,6 +62,7 @@ class BooksController extends Controller
             'year' => $year,
             'isbn' => $isbn,
             'date_purchased' => $datePurchased,
+            'quantity' => $request->quantity,
             'price' => $price,
             'shelf_no' => $shelfNumber,
             'status' => $request->status,
@@ -103,26 +104,57 @@ class BooksController extends Controller
                 $input['image'] = "$image";
             }
         }
-       
-        DB::connection('mysql')
+
+        $quantity = DB::connection('mysql')
         ->table('books')
-        ->where('id', '=', $request->id)
-        ->update([
-            'book_id' => $request->bookNum,
-            'title' => $request->title,
-            'author' => $request->author,
-            'publisher' => $request->publisher,
-            'category' => $category,
-            'year' => $year,
-            'isbn' => $isbn,
-            'date_purchased' => $datePurchased,
-            'price' => $price,
-            'shelf_no' => $shelfNumber,
-            'status' => $request->status,
-            'book_description' => $description,
-            'book_image' => $image,
-            'updated_at' => new \Datetime
-        ]);
+        ->where('isbn', $request->isbn)
+        ->value('quantity');
+
+        if($quantity == 1){
+            DB::connection('mysql')
+            ->table('books')
+            ->where('id', '=', $request->id)
+            ->update([
+                'book_id' => $request->bookNum,
+                'title' => $request->title,
+                'author' => $request->author,
+                'publisher' => $request->publisher,
+                'category' => $category,
+                'year' => $year,
+                'isbn' => $isbn,
+                'date_purchased' => $datePurchased,
+                'quantity' => $request->quantity,
+                'price' => $price,
+                'shelf_no' => $shelfNumber,
+                'status' => 'Available',
+                'book_description' => $description,
+                'book_image' => $image,
+                'updated_at' => new \Datetime
+            ]);
+        } else {
+            DB::connection('mysql')
+            ->table('books')
+            ->where('id', '=', $request->id)
+            ->update([
+                'book_id' => $request->bookNum,
+                'title' => $request->title,
+                'author' => $request->author,
+                'publisher' => $request->publisher,
+                'category' => $category,
+                'year' => $year,
+                'isbn' => $isbn,
+                'date_purchased' => $datePurchased,
+                'quantity' => $request->quantity,
+                'price' => $price,
+                'shelf_no' => $shelfNumber,
+                'status' => $request->status,
+                'book_description' => $description,
+                'book_image' => $image,
+                'updated_at' => new \Datetime
+            ]);
+        }
+       
+       
 
         //  DB::connection('mysql')
         // ->table('ratings')
@@ -185,6 +217,7 @@ class BooksController extends Controller
             "books.id",
             "books.title",
             "books.isbn",
+            "books.status",
             "books.price",
             "bb.id as borrowed_id",
             "bb.date_borrowed",
@@ -208,14 +241,32 @@ class BooksController extends Controller
 
 
      public function insert_borrowed_book(Request $request) {
-        DB::connection('mysql')
+        $quantity = DB::connection('mysql')
         ->table('books')
         ->where('isbn', $request->isbn)
-        ->update([
-          'borrowers' => $request->student_id,
-          'status' => 'Unavailable',
-          'updated_at' => new \Datetime
-        ]);
+        ->value('quantity');
+       
+
+        if($quantity == 2) {
+            DB::connection('mysql')
+            ->table('books')
+            ->where('isbn', $request->isbn)
+            ->update([
+            'borrowers' => $request->student_id,
+            'quantity' => DB::raw('quantity - 1'),
+              'status' => 'Unavailable',
+            'updated_at' => new \Datetime
+            ]);
+         } else {
+            DB::connection('mysql')
+            ->table('books')
+            ->where('isbn', $request->isbn)
+            ->update([
+            'borrowers' => $request->student_id,
+            'quantity' => DB::raw('quantity - 1'),
+            'updated_at' => new \Datetime
+            ]);
+         }
 
         return DB::connection('mysql')
             ->table('borrowed_books')
@@ -243,6 +294,11 @@ class BooksController extends Controller
 
 
     public function insert_to_return_books(Request $request) {
+        $quantity = DB::connection('mysql')
+        ->table('books')
+        ->where('isbn', $request->isbn)
+        ->value('quantity');
+
         DB::connection('mysql')
         ->table('returned_books')
         ->insert([
@@ -256,17 +312,29 @@ class BooksController extends Controller
         DB::connection('mysql')
         ->table('borrowed_books')
         ->where('isbn', $request->isbn)
+        ->where('id', $request->bbid)
         ->update([
             'status' => 'Returned'
         ]);
 
-        DB::connection('mysql')
-        ->table('books')
-        ->where('isbn', $request->isbn)
-        ->update([
-            'status' => 'Available',
-            'borrowers' => NULL
-        ]);
+        if($quantity == 1) { 
+            DB::connection('mysql')
+            ->table('books')
+            ->where('isbn', $request->isbn)
+            ->update([
+                'quantity' => DB::raw('quantity + 1'),
+                'status' => 'Available',
+                'borrowers' => NULL
+            ]);
+        } else {
+             DB::connection('mysql')
+            ->table('books')
+            ->where('isbn', $request->isbn)
+            ->update([
+                'quantity' => DB::raw('quantity + 1'),
+                'borrowers' => NULL
+            ]);
+        }
     }
 
 

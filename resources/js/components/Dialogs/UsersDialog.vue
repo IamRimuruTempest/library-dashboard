@@ -85,7 +85,6 @@
                                     outlined
                                     dense
                                     class="pt-0 mb-3"
-                                    :rules="rules"
                                 ></v-autocomplete>
                             </v-col>
                         </v-row>

@@ -134,6 +134,7 @@ export default {
                 data: {
                     isbn: this.book.isbn,
                     uid: this.book.uid,
+                    bbid: this.book.bbid,
                     receiver: receiver,
                     date_received: this.date,
                 },
@@ -162,6 +163,7 @@ export default {
         showDialog() {
             this.book.isbn = this.bookToReturn.isbn;
             this.book.book = this.bookToReturn.title;
+            this.book.bbid = this.bookToReturn.borrowed_id;
             this.book.uid = this.bookToReturn.uid;
             this.book.student_id = this.bookToReturn.student_id;
             let suffix;

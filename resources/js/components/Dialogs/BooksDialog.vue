@@ -76,6 +76,14 @@
                         <v-row class="mb-0">
                             <v-col class="pb-0 mt-0">
                                 <InputText
+                                    v-model="books.quantity"
+                                    label="Quantity"
+                                    v-mask="'####'"
+                                    :rules="rules"
+                                />
+                            </v-col>
+                            <v-col class="pb-0 mt-0">
+                                <InputText
                                     v-model="books.year"
                                     label="Year"
                                     v-mask="'####'"
@@ -218,6 +226,7 @@ export default {
             year: null,
             isbn: null,
             date_purchased: null,
+            quantity: null,
             price: null,
             shelf_no: null,
             status: null,
@@ -312,6 +321,7 @@ export default {
                     formData.append("year", this.books.year);
                     formData.append("isbn", this.books.isbn);
                     formData.append("datePurchased", this.books.date_purchased);
+                    formData.append("quantity", this.books.quantity);
                     formData.append("price", this.books.price);
                     formData.append("shelfNumber", this.books.shelf_no);
                     formData.append("status", this.books.status);
@@ -345,6 +355,7 @@ export default {
                     formData.append("year", this.books.year);
                     formData.append("isbn", this.books.isbn);
                     formData.append("datePurchased", this.books.date_purchased);
+                    formData.append("quantity", this.books.quantity);
                     formData.append("price", this.books.price);
                     formData.append("shelfNumber", this.books.shelf_no);
                     formData.append("status", this.books.status);
@@ -411,6 +422,7 @@ export default {
                 this.books.year = this.items.year;
                 this.books.isbn = this.items.isbn;
                 this.books.date_purchased = this.items.date_purchased;
+                this.books.quantity = this.items.quantity;
                 this.books.price = this.items.price;
                 this.books.shelf_no = this.items.shelf_no;
                 this.books.status = this.items.status;

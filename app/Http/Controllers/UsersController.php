@@ -17,7 +17,7 @@ class UsersController extends Controller
 
     public function store(Request $request) {
         $image = null;
-
+        
 
         if($request->filled('image')) {
             $image = null;
@@ -49,6 +49,8 @@ class UsersController extends Controller
 
     public function update(Request $request) {
         $image = null;
+
+       
 
         $imagePath = public_path('admins\\' . $request->image);
 

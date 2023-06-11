@@ -82,6 +82,7 @@
                     <thead>
                         <tr>
                             <th></th>
+                            <th>Index</th>
                             <th class="text-left">ISBN</th>
                             <th class="text-left">Book</th>
                             <th class="text-left">Date Borrowed</th>
@@ -98,15 +99,16 @@
                     <tbody>
                         <tr
                             v-for="item in filteredBorrowedBooks"
-                            :key="item.id"
+                            :key="item.borrowed_id"
                         >
                             <td class="">
                                 <v-checkbox
                                     v-model="selected"
-                                    :value="item.id"
+                                    :value="item.borrowed_id"
                                     @click="bookBorrowedChange(item)"
                                 ></v-checkbox>
                             </td>
+                            <td>{{ item.borrowed_id }}</td>
                             <td>{{ item.isbn }}</td>
                             <td>{{ item.title }}</td>
                             <td>{{ item.date_borrowed }}</td>
