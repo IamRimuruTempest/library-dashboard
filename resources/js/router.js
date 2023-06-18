@@ -5,6 +5,7 @@ import store from "./store";
 import Dashboard from "./pages/Dashboard";
 import Books from "./pages/Books";
 import BooksBorrowed from "./pages/BooksBorrowed";
+import BooksReserved from "./pages/BooksReserved";
 import BooksReturned from "./pages/BooksReturned";
 import BooksArchived from "./pages/BooksArchived";
 import Users from "./pages/Users";
@@ -32,6 +33,11 @@ const routes = [
         path: "/books-borrowed",
         name: "books-borrowed",
         component: BooksBorrowed,
+    },
+    {
+        path: "/books-reserved",
+        name: "books-reserved",
+        component: BooksReserved,
     },
     {
         path: "/books-returned",

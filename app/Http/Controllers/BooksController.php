@@ -254,7 +254,7 @@ class BooksController extends Controller
             ->update([
             'borrowers' => $request->student_id,
             'quantity' => DB::raw('quantity - 1'),
-              'status' => 'Unavailable',
+            'status' => 'Unavailable',
             'updated_at' => new \Datetime
             ]);
          } else {
@@ -377,6 +377,43 @@ class BooksController extends Controller
     }
 
 
+    public function get_reserved_books(){
+       return DB::connection('mysql')
+        ->table('reservations as r')
+        ->join('books as b', 'b.isbn','r.isbn')
+        ->join('accounts as a', 'a.id','r.student_id')
+        ->whereNotNull('r.student_id')
+        ->select([
+            'b.isbn',
+            'b.title',
+            'a.student_id',
+            'a.first_name',
+            'a.middle_name',
+            'a.last_name',
+            'a.suffix',
+            'a.department',
+            'a.course',
+            'a.year',
+            'a.phone_number',
+            'r.id as rid',
+            'r.created_at as reserved_date',
+        ])
+        ->get();
+    }
 
+    public function cancel_reservations(Request $request){
+        DB::connection('mysql')
+        ->table('reservations')
+        ->where('id', $request->rid)
+        ->update([
+            'student_id' => NULL,
+            'created_at' => NULL
+        ]);
+    }
+
+    public function approved_reservation(Request $request) {
+        $this->insert_borrowed_book($request);
+        $this->cancel_reservations($request);
+    }
     
 }

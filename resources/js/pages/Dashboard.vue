@@ -228,7 +228,7 @@ export default {
         today: new Date(),
         recentBorrowedBooks: [],
         recentReturnedBooks: [],
-        limit: 8,
+        limit: 6,
         users: [],
     }),
 

@@ -113,6 +113,7 @@ export default {
                 child: [
                     { text: "All Books", to: "books" },
                     { text: "Borrowed Books", to: "books-borrowed" },
+                    { text: "Reserved Books", to: "books-reserved" },
                     { text: "Returned Books", to: "books-returned" },
                     { text: "Archived Books", to: "books-archived" },
                 ],

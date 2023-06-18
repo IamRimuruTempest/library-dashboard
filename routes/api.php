@@ -35,6 +35,9 @@ Route::post('/insert_borrowed_book', [BooksController::class , 'insert_borrowed_
 Route::post('/update_borrowed_status', [BooksController::class , 'update_borrowed_status']);
 Route::post('/get_archived_books', [BooksController::class , 'get_archived_books']);
 Route::post('/restore_book', [BooksController::class , 'restore_book']);
+Route::post('/get_reserved_books', [BooksController::class , 'get_reserved_books']);
+Route::post('/cancel_reservations', [BooksController::class , 'cancel_reservations']);
+Route::post('/approved_reservation', [BooksController::class , 'approved_reservation']);
 
 Route::post('/insert_to_return_books', [BooksController::class , 'insert_to_return_books']);
 Route::post('/get_returned_books', [BooksController::class , 'get_returned_books']);
